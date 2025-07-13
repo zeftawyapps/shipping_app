@@ -109,6 +109,6 @@ abstract class AppConfigration {
 
   enum AppType { DashBord, App }
 //
-  enum EnvType { localDev, dev, prod }
+  enum EnvType { localDev, dev, prod, prototype, local, remote }
 //
  enum BackendState { local, remote }

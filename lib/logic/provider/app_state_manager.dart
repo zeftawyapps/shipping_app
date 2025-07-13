@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import '../models/data_models.dart';
+import '../models/models.dart';
 import '../data/sample_data.dart';
 
 class AppStateManager extends ChangeNotifier {

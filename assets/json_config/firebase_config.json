@@ -1,15 +1,22 @@
 {
 "firebaseConfig": {
     "dev": {
-        "apiKey": "AIzaSyDmiQ3bmatdlIPkWEQSLg2K06IsKKdWJkk",
-        "authDomain": "client-reviwer.firebaseapp.com",
-        "projectId": "client-reviwer",
-        "storageBucket": "client-reviwer.appspot.com",
-        "messagingSenderId": "76452784004",
-        "appId": "1:76452784004:web:f0fe79a6c158c4a202dfd1",
-        "measurementId": "G-0RYRCZEQ3S"
+    "apiKey": "AIzaSyD2RT_YRefIvGdaH-ZG7AUhJh1l7WTOiZA",
+  "authDomain": "shipping-app-ead85.firebaseapp.com",
+  "projectId": "shipping-app-ead85",
+  "storageBucket": "shipping-app-ead85.firebasestorage.app",
+  "messagingSenderId": "283324870932",
+  "appId": "1:283324870932:web:d42de19de607a260815201",
+  "measurementId": "G-4YWR0YCJN1"
     } ,
     "prod": {
+ "apiKey": "AIzaSyD2RT_YRefIvGdaH-ZG7AUhJh1l7WTOiZA",
+  "authDomain": "shipping-app-ead85.firebaseapp.com",
+  "projectId": "shipping-app-ead85",
+  "storageBucket": "shipping-app-ead85.firebasestorage.app",
+  "messagingSenderId": "283324870932",
+  "appId": "1:283324870932:web:d42de19de607a260815201",
+  "measurementId": "G-4YWR0YCJN1"
          
     }
 

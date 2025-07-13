@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shipping_app/logic/models/driver.dart';
+import 'package:shipping_app/logic/models/order.dart';
+import 'package:shipping_app/logic/models/user.dart';
 
-import '../../../logic/models/data_models.dart';
 import '../../../logic/provider/app_state_manager.dart';
 
 class OrdersManagementScreen extends StatefulWidget {
