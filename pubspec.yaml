@@ -56,10 +56,6 @@ dependencies:
     git:
       url: https://github.com/zeftawyapps/jodija_tamplites.git
       ref: v2.0.2
-<<<<<<< HEAD
-=======
-
->>>>>>> da31295095b78b104a57abc402074355e88b86f7
   JoDija_reposatory:
     git:
       url: https://github.com/zeftawyapps/JoDija_reposatory.git

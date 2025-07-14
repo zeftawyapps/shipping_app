@@ -1,14 +1,15 @@
-import 'package:JoDija_DataSource/https/http_urls.dart';
-import 'package:JoDija_DataSource/model/user/base_model/inhertid_models/user_model.dart';
-import 'package:JoDija_DataSource/reposetory/user/auth_repo.dart';
-import 'package:JoDija_DataSource/source/user/accountLoginLogout/auth_email_source.dart';
-import 'package:JoDija_DataSource/utilis/shardeprefrance/shard_check.dart';
-import 'package:JoDija_view/util/data_souce_bloc/base_bloc.dart';
-import 'package:JoDija_view/util/data_souce_bloc/remote_base_model.dart';
 
 
 
 
+
+import 'package:JoDija_reposatory/https/http_urls.dart';
+import 'package:JoDija_reposatory/model/user/base_model/inhertid_models/user_model.dart';
+import 'package:JoDija_reposatory/reposetory/user/auth_repo.dart';
+import 'package:JoDija_reposatory/source/user/accountLoginLogout/auth_email_source.dart';
+import 'package:JoDija_tamplites/util/data_souce_bloc/base_bloc.dart';
+import 'package:JoDija_tamplites/util/data_souce_bloc/remote_base_model.dart';
+import 'package:JoDija_tamplites/util/shardeprefrance/shard_check.dart';
 
 class AuthBloc {
   String emailKey = "email";
