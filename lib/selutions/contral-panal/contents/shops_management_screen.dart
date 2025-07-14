@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../logic/models/data_models.dart';
+import '../../../logic/models/models.dart';
 import '../../../logic/provider/app_state_manager.dart';
 
 class ShopsManagementScreen extends StatelessWidget {

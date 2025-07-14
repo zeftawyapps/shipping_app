@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../../logic/models/data_models.dart';
+import 'package:shipping_app/logic/models/models.dart';
 import '../../../logic/provider/app_state_manager.dart';
 
 class DriversManagementScreen extends StatefulWidget {
