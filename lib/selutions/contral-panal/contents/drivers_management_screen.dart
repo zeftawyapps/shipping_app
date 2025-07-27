@@ -381,7 +381,7 @@ class _DriversManagementScreenState extends State<DriversManagementScreen> {
   void _showDriverDetails(
     BuildContext context,
     Driver driver,
-    User user,
+    Users user,
     AppStateManager appState,
   ) {
     final driverOrders =
@@ -428,7 +428,7 @@ class _DriversManagementScreenState extends State<DriversManagementScreen> {
                   ),
                   _buildDetailRow(
                     'تاريخ الانضمام',
-                    _formatDate(user.createdAt),
+                    _formatDate(user.createdAt!),
                   ),
                   const Divider(),
                   _buildDetailRow(
@@ -481,7 +481,7 @@ class _DriversManagementScreenState extends State<DriversManagementScreen> {
     );
   }
 
-  void _showDriverLocation(BuildContext context, Driver driver, User user) {
+  void _showDriverLocation(BuildContext context, Driver driver, Users user) {
     showDialog(
       context: context,
       builder:
@@ -545,7 +545,7 @@ class _DriversManagementScreenState extends State<DriversManagementScreen> {
     BuildContext context,
     AppStateManager appState,
     Driver driver,
-    User user,
+    Users user,
   ) {
     DriverStatus selectedStatus = driver.status;
 
@@ -589,7 +589,7 @@ class _DriversManagementScreenState extends State<DriversManagementScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        appState.updateDriverStatus(driver.id, selectedStatus);
+                        appState.updateDriverStatus(driver.id!, selectedStatus);
                         Navigator.of(context).pop();
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -609,7 +609,7 @@ class _DriversManagementScreenState extends State<DriversManagementScreen> {
   void _showDriverOrders(
     BuildContext context,
     Driver driver,
-    User user,
+    Users user,
     AppStateManager appState,
   ) {
     final driverOrders =

@@ -3,7 +3,7 @@ import '../../../logic/models/models.dart';
 
 class DriverLocationDialog extends StatelessWidget {
   final Driver driver;
-  final User user;
+  final Users user;
 
   const DriverLocationDialog({
     Key? key,
@@ -14,7 +14,7 @@ class DriverLocationDialog extends StatelessWidget {
   static Future<void> show(
     BuildContext context,
     Driver driver,
-    User user,
+    Users user,
   ) {
     return showDialog(
       context: context,

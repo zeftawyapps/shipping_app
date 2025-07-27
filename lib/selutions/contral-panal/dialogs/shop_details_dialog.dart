@@ -4,7 +4,7 @@ import '../../../logic/provider/app_state_manager.dart';
 
 class ShopDetailsDialog extends StatelessWidget {
   final Shop shop;
-  final User owner;
+  final Users owner;
   final AppStateManager appState;
 
   const ShopDetailsDialog({
@@ -17,7 +17,7 @@ class ShopDetailsDialog extends StatelessWidget {
   static Future<void> show(
     BuildContext context,
     Shop shop,
-    User owner,
+    Users owner,
     AppStateManager appState,
   ) {
     return showDialog(

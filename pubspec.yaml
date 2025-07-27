@@ -59,7 +59,7 @@ dependencies:
   JoDija_reposatory:
     git:
       url: https://github.com/zeftawyapps/JoDija_reposatory.git
-      ref: v1.0.0
+
 
 dev_dependencies:
   flutter_test:

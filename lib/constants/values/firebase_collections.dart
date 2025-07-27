@@ -1,4 +1,6 @@
 class FirebaseCollection {
-  static const String users = 'users';
+  static const String users = 'usersAccountData';
   static const String clients = 'clients';
+  static const String drivers = 'drivers';
+  static const String orders = 'orders';
 }

@@ -4,7 +4,7 @@ import '../../../logic/provider/app_state_manager.dart';
 
 class ChangeDriverStatusDialog extends StatefulWidget {
   final Driver driver;
-  final User user;
+  final Users user;
   final AppStateManager appState;
 
   const ChangeDriverStatusDialog({
@@ -21,7 +21,7 @@ class ChangeDriverStatusDialog extends StatefulWidget {
     BuildContext context,
     AppStateManager appState,
     Driver driver,
-    User user,
+    Users user,
   ) {
     return showDialog(
       context: context,
@@ -90,7 +90,7 @@ class _ChangeDriverStatusDialogState extends State<ChangeDriverStatusDialog> {
         ),
         ElevatedButton(
           onPressed: () {
-            widget.appState.updateDriverStatus(widget.driver.id, selectedStatus);
+            widget.appState.updateDriverStatus(widget.driver.id!, selectedStatus);
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(

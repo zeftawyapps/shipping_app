@@ -1,9 +1,12 @@
+import 'package:JoDija_tamplites/util/widgits/bloc_provider.dart';
+import 'package:JoDija_tamplites/util/widgits/data_source_bloc_widgets/data_source_bloc_listner.dart';
 import 'package:flutter/material.dart';
+import 'package:shipping_app/logic/bloc/users_bloc.dart';
 import '../../../logic/models/models.dart';
 import '../../../logic/provider/app_state_manager.dart';
 
 class AddEditUserDialog extends StatefulWidget {
-  final User? user;
+  final Users? user;
   final AppStateManager appState;
 
   const AddEditUserDialog({
@@ -18,7 +21,7 @@ class AddEditUserDialog extends StatefulWidget {
   static Future<void> show(
     BuildContext context,
     AppStateManager appState, {
-    User? user,
+    Users? user,
   }) {
     return showDialog(
       context: context,
@@ -26,38 +29,32 @@ class AddEditUserDialog extends StatefulWidget {
         user: user,
         appState: appState,
       ),
-    );
+    ) ;
   }
 }
 
 class _AddEditUserDialogState extends State<AddEditUserDialog> {
-  late final TextEditingController nameController;
-  late final TextEditingController emailController;
-  late final TextEditingController phoneController;
-  late final TextEditingController passwordController;
+  final _formKey = GlobalKey<FormState>();
+  late String name;
+  late String email;
+  late String phone;
+  String password = '';
   late UserRole selectedRole;
   late bool isActive;
+  bool isLoading = false;
 
   bool get isEditing => widget.user != null;
+  late UsersBloc bloc;
 
   @override
   void initState() {
     super.initState();
-    nameController = TextEditingController(text: widget.user?.name ?? '');
-    emailController = TextEditingController(text: widget.user?.email ?? '');
-    phoneController = TextEditingController(text: widget.user?.phone ?? '');
-    passwordController = TextEditingController();
+    name = widget.user?.name ?? '';
+    email = widget.user?.email ?? '';
+    phone = widget.user?.phone ?? '';
     selectedRole = widget.user?.role ?? UserRole.driver;
     isActive = widget.user?.isActive ?? true;
-  }
-
-  @override
-  void dispose() {
-    nameController.dispose();
-    emailController.dispose();
-    phoneController.dispose();
-    passwordController.dispose();
-    super.dispose();
+    bloc = UsersBloc();
   }
 
   String _getRoleDisplayName(UserRole role) {
@@ -72,26 +69,17 @@ class _AddEditUserDialogState extends State<AddEditUserDialog> {
   }
 
   void _handleSubmit() {
-    if (nameController.text.isEmpty ||
-        emailController.text.isEmpty ||
-        phoneController.text.isEmpty ||
-        (!isEditing && passwordController.text.isEmpty)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('يرجى ملء جميع الحقول المطلوبة'),
-          backgroundColor: Colors.red,
-        ),
-      );
+    if (!_formKey.currentState!.validate()) {
       return;
     }
+    _formKey.currentState!.save();
 
-    final newUser = User(
-      id: widget.user?.id ?? 'user_${DateTime.now().millisecondsSinceEpoch}',
-      name: nameController.text,
-      email: emailController.text,
-      phone: phoneController.text,
-      passwordHash: passwordController.text.isNotEmpty
-          ? 'hashed_${passwordController.text}'
+    final newUser = Users(
+      name: name,
+      email: email,
+      phone: phone,
+      passwordHash: password.isNotEmpty
+          ? '${password}'
           : widget.user?.passwordHash ?? '',
       role: selectedRole,
       createdAt: widget.user?.createdAt ?? DateTime.now(),
@@ -99,20 +87,21 @@ class _AddEditUserDialogState extends State<AddEditUserDialog> {
     );
 
     if (isEditing) {
-      widget.appState.updateUser(newUser);
-    } else {
-      widget.appState.addUser(newUser);
-    }
-
-    Navigator.of(context).pop();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          isEditing ? 'تم تحديث المستخدم بنجاح' : 'تم إضافة المستخدم بنجاح',
+     bloc. editUser(
+        widget.user!.copyWith(
+          name: newUser.name,
+          email: newUser.email,
+          phone: newUser.phone,
+          passwordHash: newUser.passwordHash,
+          role: newUser.role,
+          isActive: newUser.isActive,
         ),
-        backgroundColor: Colors.green,
-      ),
-    );
+      );
+
+      // widget.appState.addUser(newUser);
+    } else {
+      bloc.addUser(newUser);
+    }
   }
 
   @override
@@ -123,77 +112,123 @@ class _AddEditUserDialogState extends State<AddEditUserDialog> {
       ),
       content: SizedBox(
         width: 400,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(
-                labelText: 'الاسم',
-                border: OutlineInputBorder(),
+        child: DataSourceBlocListener<Users>(
+          bloc: bloc.userBloc,
+          loading: () {
+            setState(() {
+              this.isLoading = true ;
+            });
+          },
+          success: (data) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  isEditing ? 'تم تحديث المستخدم بنجاح' : 'تم إضافة المستخدم بنجاح',
+                ),
+                backgroundColor: Colors.green,
+              ),
+            );
+            Future.delayed(Duration(milliseconds: 500));
+            Navigator.of(context).pop();
+          },
+          failure: (error, dynamic Function() callback) {},
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    initialValue: name,
+                    decoration: const InputDecoration(
+                      labelText: 'الاسم',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) => value == null || value.isEmpty ? 'يرجى إدخال الاسم' : null,
+                    onSaved: (value) => name = value ?? '',
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    initialValue: email,
+                    decoration: const InputDecoration(
+                      labelText: 'البريد الإلكتروني',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.emailAddress,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'يرجى إدخال البريد الإلكتروني';
+                      }
+
+                      final _emailRegExp = RegExp(
+                        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$',
+                      );
+                      // final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}');
+                      if (!_emailRegExp.hasMatch(value)) {
+                        return 'يرجى إدخال بريد إلكتروني صحيح';
+                      }
+                      return null;
+                    },
+                    onSaved: (value) => email = value ?? '',
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    initialValue: phone,
+                    decoration: const InputDecoration(
+                      labelText: 'رقم الهاتف',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.phone,
+                    validator: (value) => value == null || value.isEmpty ? 'يرجى إدخال رقم الهاتف' : null,
+                    onSaved: (value) => phone = value ?? '',
+                  ),
+                  const SizedBox(height: 16),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: isEditing ? 'كلمة المرور الجديدة (اختياري)' : 'كلمة المرور',
+                      border: const OutlineInputBorder(),
+                    ),
+                    obscureText: true,
+                    validator: (value) => !isEditing && (value == null || value.isEmpty)
+                        ? 'يرجى إدخال كلمة المرور'
+                        : null,
+                    onSaved: (value) => password = value ?? '',
+                  ),
+                  const SizedBox(height: 16),
+                  DropdownButtonFormField<UserRole>(
+                    value: selectedRole,
+                    decoration: const InputDecoration(
+                      labelText: 'الدور',
+                      border: OutlineInputBorder(),
+                    ),
+                    items: UserRole.values.map((role) {
+                      return DropdownMenuItem(
+                        value: role,
+                        child: Text(_getRoleDisplayName(role)),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          selectedRole = value;
+                        });
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16),
+                  CheckboxListTile(
+                    title: const Text('المستخدم نشط'),
+                    value: isActive,
+                    onChanged: (value) {
+                      setState(() {
+                        isActive = value ?? true;
+                      });
+                    },
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: emailController,
-              decoration: const InputDecoration(
-                labelText: 'البريد الإلكتروني',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.emailAddress,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: phoneController,
-              decoration: const InputDecoration(
-                labelText: 'رقم الهاتف',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.phone,
-            ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: passwordController,
-              decoration: InputDecoration(
-                labelText: isEditing
-                    ? 'كلمة المرور الجديدة (اختياري)'
-                    : 'كلمة المرور',
-                border: const OutlineInputBorder(),
-              ),
-              obscureText: true,
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<UserRole>(
-              value: selectedRole,
-              decoration: const InputDecoration(
-                labelText: 'الدور',
-                border: OutlineInputBorder(),
-              ),
-              items: UserRole.values.map((role) {
-                return DropdownMenuItem(
-                  value: role,
-                  child: Text(_getRoleDisplayName(role)),
-                );
-              }).toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    selectedRole = value;
-                  });
-                }
-              },
-            ),
-            const SizedBox(height: 16),
-            CheckboxListTile(
-              title: const Text('المستخدم نشط'),
-              value: isActive,
-              onChanged: (value) {
-                setState(() {
-                  isActive = value ?? true;
-                });
-              },
-            ),
-          ],
+          ),
         ),
       ),
       actions: [
@@ -203,7 +238,9 @@ class _AddEditUserDialogState extends State<AddEditUserDialog> {
         ),
         ElevatedButton(
           onPressed: _handleSubmit,
-          child: Text(isEditing ? 'تحديث' : 'إضافة'),
+          child:
+          isLoading ? const CircularProgressIndicator() :
+          Text(isEditing ? 'تحديث' : 'إضافة'),
         ),
       ],
     );

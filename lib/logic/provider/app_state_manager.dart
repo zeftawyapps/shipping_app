@@ -1,17 +1,18 @@
 import 'package:flutter/foundation.dart';
+import 'package:shipping_app/logic/bloc/users_bloc.dart';
 import '../models/models.dart';
 import '../data/sample_data.dart';
 
 class AppStateManager extends ChangeNotifier {
-  User? _currentUser;
-  List<User> _users = [];
+  Users? _currentUser;
+  List<Users> _users = [];
   List<Shop> _shops = [];
   List<Driver> _drivers = [];
   List<Order> _orders = [];
 
   // Getters
-  User? get currentUser => _currentUser;
-  List<User> get users => _users;
+  Users? get currentUser => _currentUser;
+  List<Users> get users => _users;
   List<Shop> get shops => _shops;
   List<Driver> get drivers => _drivers;
   List<Order> get orders => _orders;
@@ -50,12 +51,12 @@ class AppStateManager extends ChangeNotifier {
   }
 
   // إدارة المستخدمين
-  void addUser(User user) {
+  void addUser(Users user) {
     _users.add(user);
     notifyListeners();
   }
 
-  void updateUser(User updatedUser) {
+  void updateUser(Users updatedUser) {
     final index = _users.indexWhere((user) => user.id == updatedUser.id);
     if (index != -1) {
       _users[index] = updatedUser;
@@ -243,8 +244,10 @@ class AppStateManager extends ChangeNotifier {
     }).toList();
   }
 
-  List<User> getFilteredUsers({UserRole? role, String? searchQuery}) {
-    return _users.where((user) {
+  List<Users> getFilteredUsers({UserRole? role, String? searchQuery , List<Users>? remoteUsers } ) {
+   if (remoteUsers != null && remoteUsers.isNotEmpty) {
+      _users = remoteUsers;
+   return _users.where((user){
       bool matchesRole = role == null || user.role == role;
       bool matchesSearch =
           searchQuery == null ||
@@ -254,6 +257,18 @@ class AppStateManager extends ChangeNotifier {
 
       return matchesRole && matchesSearch;
     }).toList();
+   }else {
+     return _users.where((user) {
+       bool matchesRole = role == null || user.role == role;
+       bool matchesSearch =
+           searchQuery == null ||
+               user.name.toLowerCase().contains(searchQuery.toLowerCase()) ||
+               user.email.toLowerCase().contains(searchQuery.toLowerCase()) ||
+               user.phone.contains(searchQuery);
+
+       return matchesRole && matchesSearch;
+     }).toList();
+   }
   }
 
   List<Driver> getFilteredDrivers({DriverStatus? status}) {
@@ -313,7 +328,7 @@ class AppStateManager extends ChangeNotifier {
     final user = _users.firstWhere(
       (u) => u.id == userId,
       orElse:
-          () => User(
+          () => Users(
             id: userId,
             name: "غير معروف",
             email: "",

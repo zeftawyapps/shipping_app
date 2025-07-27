@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shipping_app/logic/bloc/Auth_bloc.dart';
 
+import '../../logic/models/user.dart';
 import '../../logic/provider/app_state_manager.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -101,15 +102,45 @@ class _LoginScreenState extends State<LoginScreen>
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: DataSourceBlocListener<UserModule>(
+                child: DataSourceBlocListener<Users>(
                   bloc: authBloc.userBloc,
+                  loading: () {
+                    setState(() {
+                      _isLoading = true;
+                    });
+                  },
                   success: (data) {
-                    goRoute(context, "/home", replace: true);
+                    if (data != null && data.role == UserRole.admin) {
+                      goRoute(context, "/home", replace: true);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'بيانات تسجيل الدخول غير صحيحة أو لا تملك صلاحية المحل',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    }
+                    setState(() {
+                      _isLoading = false;
+                    });
                   },
                   failure: (error, dynamic Function() callback) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text(error.message),
+                        content: Text( "فشل في تسجيل الدخول: $error",
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                         backgroundColor: Colors.red,
                       ),
                     );

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import '../../../logic/bloc/users_bloc.dart';
 import '../../../logic/models/models.dart';
 import '../../../logic/provider/app_state_manager.dart';
 
 class DeleteUserDialog extends StatelessWidget {
-  final User user;
+  final Users user;
   final AppStateManager appState;
+  UsersBloc usersBloc = UsersBloc();
 
-  const DeleteUserDialog({
+    DeleteUserDialog({
     Key? key,
     required this.user,
     required this.appState,
@@ -15,7 +17,7 @@ class DeleteUserDialog extends StatelessWidget {
   static Future<void> show(
     BuildContext context,
     AppStateManager appState,
-    User user,
+    Users user,
   ) {
     return showDialog(
       context: context,
@@ -27,7 +29,8 @@ class DeleteUserDialog extends StatelessWidget {
   }
 
   void _handleDelete(BuildContext context) {
-    appState.deleteUser(user.id);
+    // appState.deleteUser(user.id!);
+    usersBloc.deleteUser(user.id!);
     Navigator.of(context).pop();
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(

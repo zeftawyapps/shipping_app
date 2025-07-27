@@ -1,8 +1,4 @@
 
-
-
-
-
 import 'package:JoDija_reposatory/https/http_urls.dart';
 import 'package:JoDija_reposatory/model/user/base_model/inhertid_models/user_model.dart';
 import 'package:JoDija_reposatory/reposetory/user/auth_repo.dart';
@@ -11,6 +7,8 @@ import 'package:JoDija_tamplites/util/data_souce_bloc/base_bloc.dart';
 import 'package:JoDija_tamplites/util/data_souce_bloc/remote_base_model.dart';
 import 'package:JoDija_tamplites/util/shardeprefrance/shard_check.dart';
 
+import '../models/user.dart';
+
 class AuthBloc {
   String emailKey = "email";
   String nameKey = "name";
@@ -18,8 +16,8 @@ class AuthBloc {
   String phone = "phone";
   String rePass = "rePass";
 
-  DataSourceBloc<UserModule> userBloc =
-  DataSourceBloc<UserModule>();
+  DataSourceBloc<Users> userBloc =
+  DataSourceBloc<Users>();
 
   void signUp({required Map<String, dynamic> map}) async {
     BaseAuthRepo accountSource = BaseAuthRepo(EmailPassowrdAuthSource(email: map[emailKey], pass: map[passKey]));
@@ -32,7 +30,7 @@ class AuthBloc {
           , token: v.token!
       );
       HttpHeader().setAuthHeader(v.token! ,Bearer:  "Bearer__");
-      userBloc.successState( UserModule.formJson(v.toJson())  )   ;
+      userBloc.successState( Users.formJson(v.toJson())  )   ;
     }, onError: (error) {
       userBloc.failedState(ErrorStateModel(message: error.message) , () {});
     });
@@ -48,7 +46,7 @@ class AuthBloc {
       sharedPrefranceChecking.setDataInShardRefrace(    email: map[emailKey] , pass: map[passKey]!
           , token: v.token!
       );
-      userBloc.successState( UserModule.formJson(v.toJson())  )   ;
+      userBloc.successState( Users.formJson(v.toJson())  )   ;
     }, onError: (error) {
       userBloc.failedState(ErrorStateModel(message: error.message) , () {});
     });

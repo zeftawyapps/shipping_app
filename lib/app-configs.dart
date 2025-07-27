@@ -1,18 +1,24 @@
 
 import 'package:JoDija_reposatory/https/http_urls.dart';
-import 'package:JoDija_reposatory/jodija_configration.dart';
 import 'package:JoDija_reposatory/utilis/json_reader/json_asset_reader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:firebase_core/firebase_core.dart';
+import 'package:shipping_app/enums.dart';
 import 'package:shipping_app/selutions/contral-panal/launch-cp.dart';
+import 'package:shipping_app/selutions/moble-app/login_screen.dart';
 import 'constants/configs.dart';
 abstract class AppConfigration {
   static AppType appType = AppType.DashBord;
   static EnvType envType = EnvType.dev;
-  static BackendState backendState = BackendState.remote;
-
+  static BackendState backendState = BackendState.remote_dev;
+  static initConfig(AppType appType, EnvType envType, BackendState backendState) {
+    AppConfigration.appType = appType;
+    AppConfigration.envType = envType;
+    AppConfigration.backendState = backendState;
+    
+  }
   static Future FirebaseInit() async {
     try {
       var data =
@@ -63,22 +69,16 @@ abstract class AppConfigration {
     }
   }
 
-  static Widget _launchWeb({required Widget web, required Widget dashboard}) {
-    if (appType == AppType.App) {
-      return web;
-    } else {
-      return dashboard;
-    }
-  }
+  // static Widget _launchWeb({required Widget web, required Widget dashboard}) {
+  //   if (appType == AppType.App) {
+  //     return web;
+  //   } else {
+  //     return dashboard;
+  //   }
+  // }
 
   static Widget launchScreen() {
-    return _launchWidget(
-        web: _launchWeb(
-          web: Launchcp(),
-          dashboard: Launchcp(),
-        ),
-        mobile: Launchcp());
-  }
+    return  AppLoginScreen(); // or any other screen you want to launch
 }
 // static String baseRoute() {
 //   if (!kIsWeb) {
@@ -107,8 +107,4 @@ abstract class AppConfigration {
 // }
 // }
 
-  enum AppType { DashBord, App }
-//
-  enum EnvType { localDev, dev, prod, prototype, local, remote }
-//
- enum BackendState { local, remote }
+}

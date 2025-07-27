@@ -4,7 +4,7 @@ import '../../../logic/provider/app_state_manager.dart';
 
 class DriverDetailsDialog extends StatelessWidget {
   final Driver driver;
-  final User user;
+  final Users user;
   final AppStateManager appState;
 
   const DriverDetailsDialog({
@@ -17,7 +17,7 @@ class DriverDetailsDialog extends StatelessWidget {
   static Future<void> show(
     BuildContext context,
     Driver driver,
-    User user,
+    Users user,
     AppStateManager appState,
   ) {
     return showDialog(

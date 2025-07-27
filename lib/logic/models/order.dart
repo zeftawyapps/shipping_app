@@ -1,9 +1,11 @@
 // نموذج بيانات الطلب
 
+import 'package:JoDija_reposatory/utilis/models/base_data_model.dart';
+
 import 'order_item.dart';
 import 'contact_details.dart';
 
-enum OrderStatus {
+enum OrderStatus  {
   pending_acceptance,
   accepted,
   picked_up,
@@ -12,7 +14,7 @@ enum OrderStatus {
   cancelled,
 }
 
-class Order {
+class Order  extends BaseEntityDataModel {
   final String id;
   final String shopId;
   final String? driverId;

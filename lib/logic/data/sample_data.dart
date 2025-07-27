@@ -2,8 +2,8 @@ import 'package:shipping_app/logic/models/models.dart';
 
 
 // بيانات تجريبية للمستخدمين
-final List<User> sampleUsers = [
-  User(
+final List<Users> sampleUsers = [
+  Users(
     id: "user_admin_001",
     name: "أحمد المدير",
     email: "ahmed.admin@example.com",
@@ -13,7 +13,7 @@ final List<User> sampleUsers = [
     createdAt: DateTime.parse("2025-07-08T10:00:00Z"),
     isActive: true,
   ),
-  User(
+  Users(
     id: "user_driver_001",
     name: "محمد السائق",
     email: "mohamed.driver@example.com",
@@ -23,7 +23,7 @@ final List<User> sampleUsers = [
     createdAt: DateTime.parse("2025-07-08T10:05:00Z"),
     isActive: true,
   ),
-  User(
+  Users(
     id: "user_driver_002",
     name: "علي السائق الثاني",
     email: "ali.driver@example.com",
@@ -33,7 +33,7 @@ final List<User> sampleUsers = [
     createdAt: DateTime.parse("2025-07-08T10:06:00Z"),
     isActive: true,
   ),
-  User(
+  Users(
     id: "user_shop_001",
     name: "فاطمة صاحبة المطعم",
     email: "fatma.restaurant@example.com",
@@ -43,7 +43,7 @@ final List<User> sampleUsers = [
     createdAt: DateTime.parse("2025-07-08T10:10:00Z"),
     isActive: true,
   ),
-  User(
+  Users(
     id: "user_shop_002",
     name: "خالد صاحب المخبز",
     email: "khaled.bakery@example.com",
@@ -256,7 +256,7 @@ class SampleDataProvider {
   static const String googleMapsApiKey =
       "AIzaSyD2duRi55YWuhTmCqH8gFEV7gGDhoYsJUQ";
 
-  static List<User> getUsers() => List.from(sampleUsers);
+  static List<Users> getUsers() => List.from(sampleUsers);
   static List<Shop> getShops() => List.from(sampleShops);
   static List<Driver> getDrivers() => List.from(sampleDrivers);
   static List<Order> getOrders() => List.from(sampleOrders);
@@ -310,7 +310,7 @@ class SampleDataProvider {
   }
 
   // دالة للبحث عن مستخدم بالإيميل وكلمة المرور
-  static User? authenticateUser(String email, String password) {
+  static Users? authenticateUser(String email, String password) {
     try {
       return sampleUsers.firstWhere(
         (user) =>
@@ -324,7 +324,7 @@ class SampleDataProvider {
   }
 
   // دالة للحصول على مستخدم بالمعرف
-  static User? getUserById(String id) {
+  static Users? getUserById(String id) {
     try {
       return sampleUsers.firstWhere((user) => user.id == id);
     } catch (e) {

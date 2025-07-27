@@ -60,7 +60,7 @@ class AssignDriverDialog extends StatelessWidget {
                   ),
                   trailing: ElevatedButton(
                     onPressed: () {
-                      appState.assignDriverToOrder(order.id, driver.id);
+                      appState.assignDriverToOrder(order.id, driver.id!);
                       Navigator.of(context).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
