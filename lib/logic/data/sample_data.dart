@@ -59,8 +59,7 @@ final List<Users> sampleUsers = [
 final List<Shop> sampleShops = [
   Shop(
     id: "shop_001",
-    ownerId: "user_shop_001",
-    name: "مطعم الأكلات الشرقية",
+    userName: "مطعم الأكلات الشرقية",
     address: "شارع النيل، مبنى 5، الطنطا",
     location: Location(latitude: 30.7936, longitude: 31.0003),
     phone: "+20401234567",
@@ -70,8 +69,7 @@ final List<Shop> sampleShops = [
   ),
   Shop(
     id: "shop_002",
-    ownerId: "user_shop_002",
-    name: "مخبز الحلويات",
+    userName: "مخبز الحلويات",
     address: "شارع طلعت حرب، الطنطا",
     location: Location(latitude: 30.8000, longitude: 30.9950),
     phone: "+20409876543",

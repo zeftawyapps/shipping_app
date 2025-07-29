@@ -3,4 +3,5 @@ class FirebaseCollection {
   static const String clients = 'clients';
   static const String drivers = 'drivers';
   static const String orders = 'orders';
+  static const String shops = 'shops';
 }

@@ -68,7 +68,8 @@ class ShopsManagementScreen extends StatelessWidget {
                       rows:
                           appState.shops.map((shop) {
                             final owner = appState.users.firstWhere(
-                              (u) => u.id == shop.ownerId,
+                              (u) => u.email == shop.email,
+                              orElse: () => appState.users.first, // fallback to avoid crashes
                             );
                             final activeOrders =
                                 appState.orders
@@ -82,10 +83,10 @@ class ShopsManagementScreen extends StatelessWidget {
 
                             return DataRow(
                               cells: [
-                                DataCell(Text(shop.name)),
+                                DataCell(Text(shop.userName)),
                                 DataCell(Text(owner.name)),
-                                DataCell(Text(shop.address)),
-                                DataCell(Text(shop.phone)),
+                                DataCell(Text(shop.address ?? 'غير محدد')),
+                                DataCell(Text(shop.phone ?? 'غير محدد')),
                                 DataCell(
                                   Container(
                                     padding: const EdgeInsets.symmetric(
@@ -234,15 +235,15 @@ class ShopsManagementScreen extends StatelessWidget {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: Text('تفاصيل المحل: ${shop.name}'),
+            title: Text('تفاصيل المحل: ${shop.userName}'),
             content: SizedBox(
               width: 400,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  _buildDetailRow('اسم المحل', shop.name),
-                  _buildDetailRow('المالك', owner.name),
+                  _buildDetailRow('اسم المحل', shop.userName),
+                  _buildDetailRow('المالك', owner.userName),
                   _buildDetailRow('البريد الإلكتروني', shop.email),
                   _buildDetailRow('رقم الهاتف', shop.phone),
                   _buildDetailRow('العنوان', shop.address),
@@ -302,7 +303,7 @@ class ShopsManagementScreen extends StatelessWidget {
       context: context,
       builder:
           (context) => AlertDialog(
-            title: Text('موقع المحل: ${shop.name}'),
+            title: Text('موقع المحل: ${shop.userName}'),
             content: SizedBox(
               width: 400,
               height: 300,

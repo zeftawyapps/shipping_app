@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../logic/models/models.dart';
+import '../../../../logic/models/models.dart';
 
 class ShopLocationDialog extends StatelessWidget {
   final Shop shop;

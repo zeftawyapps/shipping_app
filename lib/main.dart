@@ -22,7 +22,7 @@ void main() {
 
 
 appInit() async {
-  AppConfigration.initConfig(AppType.DashBord , EnvType.dev, BackendState.remote_dev);
+  AppConfigration.initConfig(AppType.App_shop , EnvType.dev, BackendState.remote_dev);
   String lang = "ar";
   
   WidgetsFlutterBinding.ensureInitialized();

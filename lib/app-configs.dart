@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shipping_app/enums.dart';
 import 'package:shipping_app/selutions/contral-panal/launch-cp.dart';
-import 'package:shipping_app/selutions/moble-app/login_screen.dart';
+import 'package:shipping_app/selutions/moble-app/shops/screens/login_screen.dart';
 import 'constants/configs.dart';
 abstract class AppConfigration {
   static AppType appType = AppType.DashBord;
@@ -78,7 +78,7 @@ abstract class AppConfigration {
   // }
 
   static Widget launchScreen() {
-    return  AppLoginScreen(); // or any other screen you want to launch
+    return  ShopLoginScreen(); // or any other screen you want to launch
 }
 // static String baseRoute() {
 //   if (!kIsWeb) {

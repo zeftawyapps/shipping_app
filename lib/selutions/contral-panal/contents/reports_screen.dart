@@ -299,7 +299,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
     final ordersByShop = <String, int>{};
     for (final shop in appState.shops) {
-      ordersByShop[shop.name] =
+      ordersByShop[shop.userName] =
           appState.orders.where((o) => o.shopId == shop.id).length;
     }
 
@@ -657,7 +657,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                               style: const TextStyle(color: Colors.white),
                             ),
                           ),
-                          title: Text(shop.name),
+                          title: Text(shop.userName),
                           subtitle: Text(
                             'الطلبات المكتملة: $completedOrders | الإيرادات: ${totalRevenue.toStringAsFixed(2)} ج.م',
                           ),

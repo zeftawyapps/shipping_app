@@ -3,20 +3,22 @@
 import 'location.dart';
 
 class Shop {
-  final String id;
-  final String ownerId;
-  final String name;
-  final String address;
-  final Location location;
-  final String phone;
-  final String email;
-  final DateTime createdAt;
-  final bool isActive;
+    String id;
+
+    String userName;
+    String? shopName;
+    String? address;
+    Location? location;
+    String? phone;
+    String email;
+    DateTime createdAt;
+    bool isActive;
 
   Shop({
     required this.id,
-    required this.ownerId,
-    required this.name,
+    this.shopName,
+
+    required this.userName,
     required this.address,
     required this.location,
     required this.phone,
@@ -28,10 +30,10 @@ class Shop {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'ownerId': ownerId,
-      'name': name,
+      'shopName': shopName,
+      'name': userName,
       'address': address,
-      'location': location.toJson(),
+      'location': location?.toJson(),
       'phone': phone,
       'email': email,
       'createdAt': createdAt.toIso8601String(),
@@ -39,13 +41,13 @@ class Shop {
     };
   }
 
-  factory Shop.fromJson(Map<String, dynamic> json) {
+  factory Shop.fromJson(Map<String, dynamic> json , String id )  {
     return Shop(
-      id: json['id'],
-      ownerId: json['ownerId'],
-      name: json['name'],
+      id:  id ,
+      shopName: json['shopName'],
+      userName: json['name'],
       address: json['address'],
-      location: Location.fromJson(json['location']),
+      location:json['location'] == null ?  null  :    Location.fromJson(json['location']),
       phone: json['phone'],
       email: json['email'],
       createdAt: DateTime.parse(json['createdAt']),

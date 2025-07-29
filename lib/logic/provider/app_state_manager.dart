@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:shipping_app/logic/bloc/users_bloc.dart';
 import '../models/models.dart';
 import '../data/sample_data.dart';
 
@@ -349,8 +348,7 @@ class AppStateManager extends ChangeNotifier {
       orElse:
           () => Shop(
             id: shopId,
-            ownerId: "",
-            name: "غير معروف",
+            userName: "غير معروف",
             address: "",
             location: Location(latitude: 0, longitude: 0),
             phone: "",
@@ -359,6 +357,6 @@ class AppStateManager extends ChangeNotifier {
             isActive: false,
           ),
     );
-    return shop.name;
+    return shop.userName;
   }
 }

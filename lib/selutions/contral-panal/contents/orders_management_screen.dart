@@ -99,7 +99,7 @@ class _OrdersManagementScreenState extends State<OrdersManagementScreen> {
                                 ...appState.shops.map((shop) {
                                   return DropdownMenuItem(
                                     value: shop.id,
-                                    child: Text(shop.name),
+                                    child: Text(shop.userName),
                                   );
                                 }).toList(),
                               ],

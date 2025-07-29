@@ -15,11 +15,11 @@ class ShopDetailsDialog extends StatelessWidget {
   }) : super(key: key);
 
   static Future<void> show(
-    BuildContext context,
-    Shop shop,
-    Users owner,
-    AppStateManager appState,
-  ) {
+      BuildContext context,
+      Shop shop,
+      Users owner,
+      AppStateManager appState,
+      ) {
     return showDialog(
       context: context,
       builder: (context) => ShopDetailsDialog(
@@ -62,21 +62,23 @@ class ShopDetailsDialog extends StatelessWidget {
         .fold(0.0, (sum, order) => sum + order.totalOrderPrice);
 
     return AlertDialog(
-      title: Text('تفاصيل المحل: ${shop.name}'),
+      title: Text('تفاصيل المحل: ${shop.userName}'),
       content: SizedBox(
         width: 400,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildDetailRow('اسم المحل', shop.name),
+            _buildDetailRow('اسم المحل', shop.userName),
             _buildDetailRow('المالك', owner.name),
             _buildDetailRow('البريد الإلكتروني', shop.email),
-            _buildDetailRow('رقم الهاتف', shop.phone),
-            _buildDetailRow('العنوان', shop.address),
+            _buildDetailRow('رقم الهاتف', shop.phone ?? 'غير محدد'),
+            _buildDetailRow('العنوان', shop.address ?? 'غير محدد'),
             _buildDetailRow(
               'الموقع',
-              '${shop.location.latitude.toStringAsFixed(4)}, ${shop.location.longitude.toStringAsFixed(4)}',
+              shop.location != null
+                  ? '${shop.location!.latitude.toStringAsFixed(4)}, ${shop.location!.longitude.toStringAsFixed(4)}'
+                  : 'غير محدد',
             ),
             _buildDetailRow('تاريخ التسجيل', _formatDate(shop.createdAt)),
             _buildDetailRow('الحالة', shop.isActive ? 'نشط' : 'غير نشط'),

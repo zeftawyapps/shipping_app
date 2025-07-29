@@ -1,11 +1,15 @@
+import 'package:JoDija_tamplites/util/widgits/data_source_bloc_widgets/data_source_bloc_builder.dart';
 import 'package:flutter/material.dart';
+import 'package:shipping_app/logic/bloc/shopes_bloc.dart';
+import 'package:shipping_app/selutions/contral-panal/dialogs/shop_details_dialog.dart';
+import 'package:shipping_app/selutions/moble-app/shops/dialog/shop_details_dialog.dart';
+import 'package:shipping_app/selutions/moble-app/shops/screens/login_screen.dart';
+import '../../../../logic/data/user-data-loaded.dart';
 import '../../../../logic/models/models.dart';
-import '../../../../logic/data/sample_data.dart';
 import 'orders_list_screen.dart';
 import 'available_drivers_screen.dart';
 import 'create_order_screen.dart';
 import 'reports_screen.dart';
-import '../../login_screen.dart';
 
 class ShopHomeScreen extends StatefulWidget {
   final Users user;
@@ -19,26 +23,15 @@ class ShopHomeScreen extends StatefulWidget {
 class _ShopHomeScreenState extends State<ShopHomeScreen> {
   int _selectedIndex = 0;
   Shop? shop;
+  ShopesBloc shopesBloc = ShopesBloc();
 
   @override
   void initState() {
+    UserDataLoaded().setUser(widget.user);
     super.initState();
-    // البحث عن المحل بمعرف المالك
-    final shops = SampleDataProvider.getShops();
-    shop = shops.firstWhere(
-      (s) => s.ownerId == widget.user.id,
-      orElse: () => Shop(
-        id: "unknown",
-        ownerId: widget.user.id!,
-        name: "محل غير محدد",
-        address: "غير محدد",
-        location: Location(latitude: 0, longitude: 0),
-        phone: "غير محدد",
-        email: "غير محدد",
-        createdAt: DateTime.now(),
-        isActive: false,
-      ),
-    );
+
+
+    shopesBloc.loadShopById(widget.user.id!);
   }
 
   void _onItemTapped(int index) {
@@ -64,7 +57,7 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
                 Navigator.of(context).pop();
                 Navigator.of(context).pushReplacement(
                   MaterialPageRoute(
-                    builder: (context) => const AppLoginScreen(),
+                    builder: (context) => const ShopLoginScreen(),
                   ),
                 );
               },
@@ -80,80 +73,201 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
     );
   }
 
+  Widget _buildNavigationRail() {
+    return NavigationRail(
+      selectedIndex: _selectedIndex,
+      onDestinationSelected: _onItemTapped,
+      labelType: NavigationRailLabelType.all,
+      backgroundColor: Colors.blue[50],
+      selectedIconTheme: IconThemeData(color: Colors.blue[600]),
+      selectedLabelTextStyle: TextStyle(
+        color: Colors.blue[600],
+        fontWeight: FontWeight.bold,
+      ),
+      unselectedIconTheme: IconThemeData(color: Colors.grey[600]),
+      unselectedLabelTextStyle: TextStyle(color: Colors.grey[600]),
+      destinations: const [
+        NavigationRailDestination(
+          icon: Icon(Icons.list_alt),
+          label: Text('الطلبات'),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.delivery_dining),
+          label: Text('السائقين'),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.add_box),
+          label: Text('طلب جديد'),
+        ),
+        NavigationRailDestination(
+          icon: Icon(Icons.assessment),
+          label: Text('التقارير'),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (shop == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('خطأ'),
-        ),
-        body: const Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.error_outline,
-                size: 64,
-                color: Colors.red,
-              ),
-              SizedBox(height: 16),
-              Text(
-                'لم يتم العثور على بيانات المحل',
-                style: TextStyle(fontSize: 18),
+    return DataSourceBlocBuilder(
+      bloc: shopesBloc.shopesBloc,
+      loading: () {
+        return const Center(child: CircularProgressIndicator());
+      },
+
+      success: (data) {
+        shop = data;
+        final List<Widget> screens = [
+          OrdersListScreen(shopId: shop!.id),
+          const AvailableDriversScreen(),
+          CreateOrderScreen(shop: shop!),
+          ReportsScreen(shopId: shop!.id),
+        ];
+
+        // Check if screen width is web size (typically > 760px)
+        bool isWebSize = MediaQuery.of(context).size.width > 760;
+       if (shop!.shopName == null || shop!.address == null || shop!.email.isEmpty) {
+return Scaffold(
+          appBar: AppBar(title: const Text('خطأ')),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                const SizedBox(height: 16),
+                const Text(
+                  'لم يتم العثور على بيانات المحل',
+                  style: TextStyle(fontSize: 18),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    // show dialog to edit shop details
+                    showDialog(
+                      context: context,
+                      builder: (context) => ShopProfileDialog(
+                        shop: shop!,
+                      ),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue[600],
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text(
+                    ' تعديل البيانات  ',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+       }
+
+
+
+
+
+
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(shop!.userName),
+            backgroundColor: Colors.blue[600],
+            foregroundColor: Colors.white,
+            elevation: 0,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.logout),
+                onPressed: _logout,
+                tooltip: 'تسجيل الخروج',
               ),
             ],
           ),
-        ),
-      );
-    }
-
-    final List<Widget> screens = [
-      OrdersListScreen(shopId: shop!.id),
-      const AvailableDriversScreen(),
-      CreateOrderScreen(shop: shop!),
-      ReportsScreen(shopId: shop!.id),
-    ];
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(shop!.name),
-        backgroundColor: Colors.blue[600],
-        foregroundColor: Colors.white,
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: _logout,
-            tooltip: 'تسجيل الخروج',
+          body: isWebSize
+              ? Row(
+                  children: [
+                    _buildNavigationRail(),
+                    const VerticalDivider(thickness: 1, width: 1),
+                    Expanded(child: screens[_selectedIndex]),
+                  ],
+                )
+              : screens[_selectedIndex],
+          bottomNavigationBar: isWebSize
+              ? null
+              : BottomNavigationBar(
+                  type: BottomNavigationBarType.fixed,
+                  currentIndex: _selectedIndex,
+                  onTap: _onItemTapped,
+                  selectedItemColor: Colors.blue[600],
+                  unselectedItemColor: Colors.grey[600],
+                  items: const [
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.list_alt),
+                      label: 'الطلبات',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.delivery_dining),
+                      label: 'السائقين',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.add_box),
+                      label: 'طلب جديد',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.assessment),
+                      label: 'التقارير',
+                    ),
+                  ],
+                ),
+        );
+      },
+      failure: (error, retry) {
+        return Scaffold(
+          appBar: AppBar(title: const Text('خطأ')),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.error_outline, size: 64, color: Colors.red),
+                const SizedBox(height: 16),
+                const Text(
+                  'لم يتم العثور على بيانات المحل',
+                  style: TextStyle(fontSize: 18),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  onPressed: () {
+                    // show dialog to edit shop details
+                    showDialog(
+                      context: context,
+                      builder: (context) => ShopProfileDialog(
+                        shop: shop!,
+         
+                      ) ,
+                    ); 
+                     
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue[600],
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text(
+                    ' تعديل البيانات  ' , 
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ],
-      ),
-      body: screens[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
-        selectedItemColor: Colors.blue[600],
-        unselectedItemColor: Colors.grey[600],
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list_alt),
-            label: 'الطلبات',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.delivery_dining),
-            label: 'السائقين',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_box),
-            label: 'طلب جديد',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assessment),
-            label: 'التقارير',
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
