@@ -66,7 +66,7 @@ class DriverDetailsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final driverOrders = appState.orders.where((o) => o.driverId == driver.id).toList();
+    final driverOrders = appState.orders.where((o) => o.driverId == driver.id ).toList();
     final completedOrders = driverOrders.where((o) => o.status == OrderStatus.delivered).length;
     final cancelledOrders = driverOrders.where((o) => o.status == OrderStatus.cancelled).length;
 

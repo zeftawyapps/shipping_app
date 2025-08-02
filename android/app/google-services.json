@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "283324870932",
+    "project_id": "shipping-app-ead85",
+    "storage_bucket": "shipping-app-ead85.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:283324870932:android:8750bf22a2e94f74815201",
+        "android_client_info": {
+          "package_name": "com.example.shipping_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnEpDwNN_X3_aD31dFMYEgV_Ru4L_jj9M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

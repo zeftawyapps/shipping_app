@@ -34,7 +34,7 @@ class _AvailableDriversScreenState extends State<AvailableDriversScreen> {
   }
 
   void _showDriverDetails(Driver driver) {
-    final user = SampleDataProvider.getUserById(driver.id!);
+    final user = SampleDataProvider.getUserById(driver.id !);
     
     showModalBottomSheet(
       context: context,
@@ -373,7 +373,7 @@ class _AvailableDriversScreenState extends State<AvailableDriversScreen> {
                           itemCount: drivers.length,
                           itemBuilder: (context, index) {
                             final driver = drivers[index];
-                            final user = SampleDataProvider.getUserById(driver.id!);
+                            final user = SampleDataProvider.getUserById(driver.id !);
                             
                             return Card(
                               margin: const EdgeInsets.symmetric(

@@ -75,7 +75,7 @@ class ShopsManagementScreen extends StatelessWidget {
                                 appState.orders
                                     .where(
                                       (o) =>
-                                          o.shopId == shop.id &&
+                                          o.shopId == shop.shopId &&
                                           o.status != OrderStatus.delivered &&
                                           o.status != OrderStatus.cancelled,
                                     )
@@ -224,7 +224,7 @@ class ShopsManagementScreen extends StatelessWidget {
     AppStateManager appState,
   ) {
     final shopOrders =
-        appState.orders.where((o) => o.shopId == shop.id).toList();
+        appState.orders.where((o) => o.shopId == shop.shopId).toList();
     final completedOrders =
         shopOrders.where((o) => o.status == OrderStatus.delivered).length;
     final totalRevenue = shopOrders

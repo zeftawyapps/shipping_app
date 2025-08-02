@@ -56,7 +56,7 @@ class AppStateManager extends ChangeNotifier {
   }
 
   void updateUser(Users updatedUser) {
-    final index = _users.indexWhere((user) => user.id == updatedUser.id);
+    final index = _users.indexWhere((user) => user.shopId == updatedUser.shopId);
     if (index != -1) {
       _users[index] = updatedUser;
       notifyListeners();
@@ -64,7 +64,7 @@ class AppStateManager extends ChangeNotifier {
   }
 
   void deleteUser(String userId) {
-    _users.removeWhere((user) => user.id == userId);
+    _users.removeWhere((user) => user.shopId == userId);
     notifyListeners();
   }
 
@@ -75,7 +75,7 @@ class AppStateManager extends ChangeNotifier {
   }
 
   void updateShop(Shop updatedShop) {
-    final index = _shops.indexWhere((shop) => shop.id == updatedShop.id);
+    final index = _shops.indexWhere((shop) => shop.shopId == updatedShop.shopId);
     if (index != -1) {
       _shops[index] = updatedShop;
       notifyListeners();
@@ -83,16 +83,16 @@ class AppStateManager extends ChangeNotifier {
   }
 
   void deleteShop(String shopId) {
-    _shops.removeWhere((shop) => shop.id == shopId);
+    _shops.removeWhere((shop) => shop.shopId == shopId);
     notifyListeners();
   }
 
   // إدارة السائقين
   void updateDriverLocation(String driverId, Location location) {
-    final index = _drivers.indexWhere((driver) => driver.id == driverId);
+    final index = _drivers.indexWhere((driver) => driver.id  == driverId);
     if (index != -1) {
       _drivers[index] = Driver(
-        id: _drivers[index].id,
+        id : _drivers[index].id ,
         currentLocation: location,
         status: _drivers[index].status,
         rallyPoint: _drivers[index].rallyPoint,
@@ -104,10 +104,10 @@ class AppStateManager extends ChangeNotifier {
   }
 
   void updateDriverStatus(String driverId, DriverStatus status) {
-    final index = _drivers.indexWhere((driver) => driver.id == driverId);
+    final index = _drivers.indexWhere((driver) => driver.id  == driverId);
     if (index != -1) {
       _drivers[index] = Driver(
-        id: _drivers[index].id,
+        id : _drivers[index].id ,
         currentLocation: _drivers[index].currentLocation,
         status: status,
         rallyPoint: _drivers[index].rallyPoint,
@@ -125,7 +125,7 @@ class AppStateManager extends ChangeNotifier {
   }
 
   void updateOrder(Order updatedOrder) {
-    final index = _orders.indexWhere((order) => order.id == updatedOrder.id);
+    final index = _orders.indexWhere((order) => order.shopId == updatedOrder.shopId);
     if (index != -1) {
       _orders[index] = updatedOrder;
       notifyListeners();
@@ -133,18 +133,18 @@ class AppStateManager extends ChangeNotifier {
   }
 
   void deleteOrder(String orderId) {
-    _orders.removeWhere((order) => order.id == orderId);
+    _orders.removeWhere((order) => order.shopId == orderId);
     notifyListeners();
   }
 
   // تعيين سائق لطلب
   void assignDriverToOrder(String orderId, String driverId) {
-    final orderIndex = _orders.indexWhere((order) => order.id == orderId);
+    final orderIndex = _orders.indexWhere((order) => order.shopId == orderId);
     if (orderIndex != -1) {
       final order = _orders[orderIndex];
       final updatedOrder = Order(
-        id: order.id,
         shopId: order.shopId,
+        id : order.shopId,
         driverId: driverId,
         senderDetails: order.senderDetails,
         recipientDetails: order.recipientDetails,
@@ -168,7 +168,7 @@ class AppStateManager extends ChangeNotifier {
 
   // تحديث حالة الطلب
   void updateOrderStatus(String orderId, OrderStatus status) {
-    final orderIndex = _orders.indexWhere((order) => order.id == orderId);
+    final orderIndex = _orders.indexWhere((order) => order.shopId == orderId);
     if (orderIndex != -1) {
       final order = _orders[orderIndex];
       DateTime? pickedUpAt = order.pickedUpAt;
@@ -198,8 +198,8 @@ class AppStateManager extends ChangeNotifier {
       }
 
       final updatedOrder = Order(
-        id: order.id,
         shopId: order.shopId,
+        id : order.shopId,
         driverId: order.driverId,
         senderDetails: order.senderDetails,
         recipientDetails: order.recipientDetails,
@@ -325,10 +325,10 @@ class AppStateManager extends ChangeNotifier {
   // دالة للحصول على اسم المستخدم
   String getUserName(String userId) {
     final user = _users.firstWhere(
-      (u) => u.id == userId,
+      (u) => u.shopId == userId,
       orElse:
           () => Users(
-            id: userId,
+            shopId: userId,
             name: "غير معروف",
             email: "",
             phone: "",
@@ -344,10 +344,10 @@ class AppStateManager extends ChangeNotifier {
   // دالة للحصول على اسم المحل
   String getShopName(String shopId) {
     final shop = _shops.firstWhere(
-      (s) => s.id == shopId,
+      (s) => s.shopId == shopId,
       orElse:
           () => Shop(
-            id: shopId,
+            shopId: shopId,
             userName: "غير معروف",
             address: "",
             location: Location(latitude: 0, longitude: 0),

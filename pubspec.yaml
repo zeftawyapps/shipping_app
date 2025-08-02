@@ -38,6 +38,9 @@ dependencies:
   url_strategy: ^0.2.0
   provider: ^6.1.5
   fl_chart: ^0.67.0
+  location: ^8.0.1
+  geocoding: ^4.0.0
+  google_maps_flutter: ^2.12.3
 
   # get jodija with win path
   #  JoDija_tamplites:
@@ -55,7 +58,7 @@ dependencies:
   JoDija_tamplites:
     git:
       url: https://github.com/zeftawyapps/jodija_tamplites.git
-      ref: v2.0.2
+#      ref: v2.0.3
   JoDija_reposatory:
     git:
       url: https://github.com/zeftawyapps/JoDija_reposatory.git

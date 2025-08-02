@@ -1,8 +1,7 @@
 import 'package:JoDija_tamplites/util/widgits/data_source_bloc_widgets/data_source_bloc_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:shipping_app/logic/bloc/shopes_bloc.dart';
-import 'package:shipping_app/selutions/contral-panal/dialogs/shop_details_dialog.dart';
-import 'package:shipping_app/selutions/moble-app/shops/dialog/shop_details_dialog.dart';
+import 'package:shipping_app/selutions/moble-app/shops/dialog/shop_edit_details_dialog.dart';
 import 'package:shipping_app/selutions/moble-app/shops/screens/login_screen.dart';
 import '../../../../logic/data/user-data-loaded.dart';
 import '../../../../logic/models/models.dart';
@@ -31,7 +30,7 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
     super.initState();
 
 
-    shopesBloc.loadShopById(widget.user.id!);
+    shopesBloc.loadShopById(widget.user.shopId!);
   }
 
   void _onItemTapped(int index) {
@@ -118,10 +117,10 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
       success: (data) {
         shop = data;
         final List<Widget> screens = [
-          OrdersListScreen(shopId: shop!.id),
+          OrdersListScreen(shopId: shop!.shopId),
           const AvailableDriversScreen(),
           CreateOrderScreen(shop: shop!),
-          ReportsScreen(shopId: shop!.id),
+          ReportsScreen(shopId: shop!.shopId),
         ];
 
         // Check if screen width is web size (typically > 760px)
@@ -142,13 +141,34 @@ return Scaffold(
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
-                    // show dialog to edit shop details
-                    showDialog(
-                      context: context,
-                      builder: (context) => ShopProfileDialog(
-                        shop: shop!,
-                      ),
-                    );
+                    // Check screen size to determine dialog type
+                    bool isSmallScreen = MediaQuery.of(context).size.width <= 760;
+                    
+                    if (isSmallScreen) {
+                      // Show bottom sheet for small screens
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) => Container(
+                          height: MediaQuery.of(context).size.height * 0.9,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            ),
+                          ),
+                          child: ShopProfileDialog(shop: shop!),
+                        ),
+                      );
+                    } else {
+                      // Show dialog for larger screens
+                      showDialog(
+                        context: context,
+                        builder: (context) => ShopProfileDialog(shop: shop!),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue[600],
@@ -241,15 +261,34 @@ return Scaffold(
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () {
-                    // show dialog to edit shop details
-                    showDialog(
-                      context: context,
-                      builder: (context) => ShopProfileDialog(
-                        shop: shop!,
-         
-                      ) ,
-                    ); 
-                     
+                    // Check screen size to determine dialog type
+                    bool isSmallScreen = MediaQuery.of(context).size.width <= 600;
+                    
+                    if (isSmallScreen) {
+                      // Show bottom sheet for small screens
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        backgroundColor: Colors.transparent,
+                        builder: (context) => Container(
+                          height: MediaQuery.of(context).size.height * 0.9,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(20),
+                              topRight: Radius.circular(20),
+                            ),
+                          ),
+                          child: ShopProfileDialog(shop: shop!),
+                        ),
+                      );
+                    } else {
+                      // Show dialog for larger screens
+                      showDialog(
+                        context: context,
+                        builder: (context) => ShopProfileDialog(shop: shop!),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue[600],

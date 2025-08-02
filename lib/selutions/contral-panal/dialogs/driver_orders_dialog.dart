@@ -53,7 +53,7 @@ class DriverOrdersDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final driverOrders = appState.orders.where((o) => o.driverId == driver.id).toList();
+    final driverOrders = appState.orders.where((o) => o.driverId == driver.id ).toList();
 
     return AlertDialog(
       title: Text('طلبات السائق: ${user.name}'),
@@ -68,7 +68,7 @@ class DriverOrdersDialog extends StatelessWidget {
                   final order = driverOrders[index];
                   return Card(
                     child: ListTile(
-                      title: Text('الطلب ${order.id}'),
+                      title: Text('الطلب ${order.shopId}'),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [

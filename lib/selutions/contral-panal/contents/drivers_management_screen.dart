@@ -154,13 +154,13 @@ class _DriversManagementScreenState extends State<DriversManagementScreen> {
                       rows:
                           filteredDrivers.map((driver) {
                             final user = appState.users.firstWhere(
-                              (u) => u.id == driver.id,
+                              (u) => u.shopId == driver.id ,
                             );
                             final activeOrders =
                                 appState.orders
                                     .where(
                                       (o) =>
-                                          o.driverId == driver.id &&
+                                          o.driverId == driver.id  &&
                                           o.status != OrderStatus.delivered &&
                                           o.status != OrderStatus.cancelled,
                                     )
@@ -385,7 +385,7 @@ class _DriversManagementScreenState extends State<DriversManagementScreen> {
     AppStateManager appState,
   ) {
     final driverOrders =
-        appState.orders.where((o) => o.driverId == driver.id).toList();
+        appState.orders.where((o) => o.driverId == driver.id ).toList();
     final completedOrders =
         driverOrders.where((o) => o.status == OrderStatus.delivered).length;
     final cancelledOrders =
@@ -589,7 +589,7 @@ class _DriversManagementScreenState extends State<DriversManagementScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        appState.updateDriverStatus(driver.id!, selectedStatus);
+                        appState.updateDriverStatus(driver.id !, selectedStatus);
                         Navigator.of(context).pop();
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
@@ -613,7 +613,7 @@ class _DriversManagementScreenState extends State<DriversManagementScreen> {
     AppStateManager appState,
   ) {
     final driverOrders =
-        appState.orders.where((o) => o.driverId == driver.id).toList();
+        appState.orders.where((o) => o.driverId == driver.id ).toList();
 
     showDialog(
       context: context,
@@ -632,7 +632,7 @@ class _DriversManagementScreenState extends State<DriversManagementScreen> {
                           final order = driverOrders[index];
                           return Card(
                             child: ListTile(
-                              title: Text('الطلب ${order.id}'),
+                              title: Text('الطلب ${order.shopId}'),
                               subtitle: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [

@@ -35,7 +35,7 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
             .where((order) => order.status == OrderStatus.pending_acceptance)
             .toList();
         myOrders = SampleDataProvider.getOrders()
-            .where((order) => order.driverId == widget.driver.id)
+            .where((order) => order.driverId == widget.driver.shopId)
             .toList();
         _isLoading = false;
       });
@@ -256,7 +256,7 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
                 ),
                 const Spacer(),
                 Text(
-                  'طلب رقم: ${order.id.substring(order.id.length - 3)}',
+                  'طلب رقم: ${order.shopId.substring(order.shopId.length - 3)}',
                   style: TextStyle(
                     color: Colors.grey[600],
                     fontWeight: FontWeight.bold,

@@ -37,7 +37,7 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'الطلب رقم: ${order.id}',
+                'الطلب رقم: ${order.shopId}',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -289,7 +289,7 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  'الطلب رقم: ${order.id}',
+                                  'الطلب رقم: ${order.shopId}',
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 16,

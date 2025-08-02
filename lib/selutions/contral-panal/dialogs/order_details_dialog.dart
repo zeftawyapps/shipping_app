@@ -69,7 +69,7 @@ class OrderDetailsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('تفاصيل الطلب ${order.id}'),
+      title: Text('تفاصيل الطلب ${order.shopId}'),
       content: SizedBox(
         width: 500,
         child: SingleChildScrollView(

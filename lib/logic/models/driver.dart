@@ -6,7 +6,7 @@ import 'location.dart';
 enum DriverStatus { available, busy, at_rally_point }
 
 class Driver implements BaseEntityDataModel {
-  String? id;
+  String? id ;
   final Location currentLocation;
   final DriverStatus status;
   final Location? rallyPoint;
@@ -14,7 +14,7 @@ class Driver implements BaseEntityDataModel {
   final double rating;
 
   Driver({
-    this.id,
+    this.id ,
     required this.currentLocation,
     required this.status,
     this.rallyPoint,
@@ -26,7 +26,7 @@ class Driver implements BaseEntityDataModel {
 
   Map<String, dynamic> toJson() {
     map = {
-      'id': id,
+      'id': id ,
       'currentLocation': currentLocation.toJson(),
       'status': status.name,
       'rallyPoint': rallyPoint?.toJson(),
@@ -38,7 +38,7 @@ class Driver implements BaseEntityDataModel {
 
   factory Driver.fromJson(Map<String, dynamic> json, {String? id}) {
     return Driver(
-      id: json['id'] ?? id ?? "",
+      id : json['id'] ?? id ?? "",
       currentLocation: Location.fromJson(json['currentLocation']),
       status: DriverStatus.values.firstWhere((e) => e.name == json['status']),
       rallyPoint:

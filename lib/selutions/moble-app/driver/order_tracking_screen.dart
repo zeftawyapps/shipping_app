@@ -36,8 +36,8 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
       // محاكاة تحديث الطلب
       setState(() {
         currentOrder = Order(
-          id: currentOrder.id,
           shopId: currentOrder.shopId,
+          id : currentOrder.shopId,
           driverId: currentOrder.driverId,
           senderDetails: currentOrder.senderDetails,
           recipientDetails: currentOrder.recipientDetails,
@@ -152,7 +152,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text('تتبع الطلب #${currentOrder.id.substring(currentOrder.id.length.clamp(0, 3))}'),
+        title: Text('تتبع الطلب #${currentOrder.shopId.substring(currentOrder.shopId.length.clamp(0, 3))}'),
         backgroundColor: Colors.green[600],
         foregroundColor: Colors.white,
       ),

@@ -7,7 +7,7 @@ import 'package:JoDija_reposatory/utilis/models/base_data_model.dart';
 enum UserRole { admin, driver, shop_owner }
 
 class Users   extends UsersBaseModel  implements BaseEntityDataModel{
-    String? id;
+    String? shopId;
   final String name;
   final String email;
   final String phone;
@@ -18,7 +18,7 @@ class Users   extends UsersBaseModel  implements BaseEntityDataModel{
 
 
   Users({
-     this.id,
+     this.shopId,
     required this.name,
     required this.email,
     required this.phone,
@@ -44,7 +44,7 @@ class Users   extends UsersBaseModel  implements BaseEntityDataModel{
     bool? isActive,
   }) {
     return Users(
-      id: id ?? this.id,
+      shopId: id ?? this.shopId,
       name: name ?? this.name,
       email: email ?? this.email,
       phone: phone ?? this.phone,
@@ -61,7 +61,7 @@ class Users   extends UsersBaseModel  implements BaseEntityDataModel{
     map = Map() ;
 
      map = {
-      'uid': id,
+      'uid': shopId,
       'name': name,
       'email': email,
       'phone': phone,
@@ -79,7 +79,7 @@ class Users   extends UsersBaseModel  implements BaseEntityDataModel{
 
 
    return   Users(
-      id: json['uid'] ??  id ?? "",
+      shopId: json['uid'] ??  id ?? "",
       name: json['name'],
       email: json['email'],
       phone: json['phone']??"",

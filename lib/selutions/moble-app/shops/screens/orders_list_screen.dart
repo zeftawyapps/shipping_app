@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shipping_app/logic/bloc/order_bloc.dart';
+import '../../../../app-configs.dart';
+import '../../../../enums.dart';
 import '../../../../logic/models/models.dart';
 import '../../../../logic/data/sample_data.dart';
 import 'order_tracking_screen.dart';
@@ -15,6 +18,7 @@ class OrdersListScreen extends StatefulWidget {
 class _OrdersListScreenState extends State<OrdersListScreen> {
   List<Order> orders = [];
   bool isLoading = false;
+  OrdersBloc ordersBloc = OrdersBloc();
 
   @override
   void initState() {
@@ -23,9 +27,13 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
   }
 
   void _loadOrders() {
-    setState(() {
-      orders = SampleDataProvider.getOrdersByShopId(widget.shopId);
-    });
+
+    if (AppConfigration.envType == EnvType.prototype) {
+       orders = SampleDataProvider.getOrdersByShopId( "order_001");
+
+    }
+
+     ordersBloc.loadOrdersByShopId(widget.shopId);
   }
 
   String _getOrderStatusDisplayName(OrderStatus status) {
@@ -140,7 +148,7 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        'طلب رقم: ${order.id}',
+                                        'طلب رقم: ${order.shopId}',
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,

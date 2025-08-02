@@ -300,7 +300,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
     final ordersByShop = <String, int>{};
     for (final shop in appState.shops) {
       ordersByShop[shop.userName] =
-          appState.orders.where((o) => o.shopId == shop.id).length;
+          appState.orders.where((o) => o.shopId == shop.shopId).length;
     }
 
     return Column(
@@ -500,11 +500,11 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       itemBuilder: (context, index) {
                         final driver = appState.drivers[index];
                         final user = appState.users.firstWhere(
-                          (u) => u.id == driver.id,
+                          (u) => u.shopId == driver.id ,
                         );
                         final driverOrders =
                             appState.orders
-                                .where((o) => o.driverId == driver.id)
+                                .where((o) => o.driverId == driver.id )
                                 .toList();
                         final completedOrders =
                             driverOrders
@@ -635,7 +635,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                         final shop = appState.shops[index];
                         final shopOrders =
                             appState.orders
-                                .where((o) => o.shopId == shop.id)
+                                .where((o) => o.shopId == shop.shopId)
                                 .toList();
                         final completedOrders =
                             shopOrders

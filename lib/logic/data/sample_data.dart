@@ -4,7 +4,7 @@ import 'package:shipping_app/logic/models/models.dart';
 // بيانات تجريبية للمستخدمين
 final List<Users> sampleUsers = [
   Users(
-    id: "user_admin_001",
+    shopId: "user_admin_001",
     name: "أحمد المدير",
     email: "ahmed.admin@example.com",
     phone: "+201001234567",
@@ -14,7 +14,7 @@ final List<Users> sampleUsers = [
     isActive: true,
   ),
   Users(
-    id: "user_driver_001",
+    shopId: "user_driver_001",
     name: "محمد السائق",
     email: "mohamed.driver@example.com",
     phone: "+201117654321",
@@ -24,7 +24,7 @@ final List<Users> sampleUsers = [
     isActive: true,
   ),
   Users(
-    id: "user_driver_002",
+    shopId: "user_driver_002",
     name: "علي السائق الثاني",
     email: "ali.driver@example.com",
     phone: "+201198765432",
@@ -34,7 +34,7 @@ final List<Users> sampleUsers = [
     isActive: true,
   ),
   Users(
-    id: "user_shop_001",
+    shopId: "user_shop_001",
     name: "فاطمة صاحبة المطعم",
     email: "fatma.restaurant@example.com",
     phone: "+201229876543",
@@ -44,7 +44,7 @@ final List<Users> sampleUsers = [
     isActive: true,
   ),
   Users(
-    id: "user_shop_002",
+    shopId: "user_shop_002",
     name: "خالد صاحب المخبز",
     email: "khaled.bakery@example.com",
     phone: "+201334455667",
@@ -58,7 +58,7 @@ final List<Users> sampleUsers = [
 // بيانات تجريبية للمحلات
 final List<Shop> sampleShops = [
   Shop(
-    id: "shop_001",
+    shopId: "shop_001",
     userName: "مطعم الأكلات الشرقية",
     address: "شارع النيل، مبنى 5، الطنطا",
     location: Location(latitude: 30.7936, longitude: 31.0003),
@@ -68,7 +68,7 @@ final List<Shop> sampleShops = [
     isActive: true,
   ),
   Shop(
-    id: "shop_002",
+    shopId: "shop_002",
     userName: "مخبز الحلويات",
     address: "شارع طلعت حرب، الطنطا",
     location: Location(latitude: 30.8000, longitude: 30.9950),
@@ -90,7 +90,7 @@ final List<Driver> sampleDrivers = [
     rating: 4.8,
   ),
   Driver(
-    id: "user_driver_002",
+    id : "user_driver_002",
     currentLocation: Location(latitude: 30.8100, longitude: 30.9900),
     status: DriverStatus.busy,
     rallyPoint: null,
@@ -102,18 +102,20 @@ final List<Driver> sampleDrivers = [
 // بيانات تجريبية للطلبات
 final List<Order> sampleOrders = [
   Order(
-    id: "order_001",
-    shopId: "shop_001",
+    shopId: "order_001",
+
     driverId: "user_driver_001",
     senderDetails: ContactDetails(
       name: "مطعم الأكلات الشرقية",
       phone: "+20401234567",
+      address: "الرياض، المملكة العربية السعودية - حي الملز، شارع الأمير سلطان",
       location: Location(latitude: 30.7936, longitude: 31.0003),
     ),
     recipientDetails: ContactDetails(
       name: "عميل تجريبي 1",
       phone: "+201009988776",
       email: "customer1@example.com",
+      address: "الرياض، المملكة العربية السعودية - حي النخيل، شارع الملك فهد، مبنى رقم 123",
       location: Location(latitude: 30.7900, longitude: 31.0050),
     ),
     items: [
@@ -143,21 +145,23 @@ final List<Order> sampleOrders = [
     pickedUpAt: DateTime.parse("2025-07-08T11:20:00Z"),
     deliveredAt: null,
     cancelledAt: null,
-    cancellationReason: null,
+    cancellationReason: null, id: '',
   ),
   Order(
-    id: "order_002",
-    shopId: "shop_002",
+    shopId: "order_002",
+  id : "order_002",
     driverId: null,
     senderDetails: ContactDetails(
       name: "مخبز الحلويات",
       phone: "+20409876543",
+      address: "الرياض، المملكة العربية السعودية - حي الورود، شارع العليا",
       location: Location(latitude: 30.8000, longitude: 30.9950),
     ),
     recipientDetails: ContactDetails(
       name: "عميل تجريبي 2",
       phone: "+201115544332",
       email: null,
+      address: "الرياض، المملكة العربية السعودية - حي الصحافة، شارع التحلية، برج الأعمال",
       location: Location(latitude: 30.8050, longitude: 30.9880),
     ),
     items: [
@@ -178,18 +182,20 @@ final List<Order> sampleOrders = [
     cancellationReason: null,
   ),
   Order(
-    id: "order_003",
-    shopId: "shop_001",
+    shopId: "order_003",
+ id: "order_003",
     driverId: "user_driver_002",
     senderDetails: ContactDetails(
       name: "مطعم الأكلات الشرقية",
       phone: "+20401234567",
+      address: "الرياض، المملكة العربية السعودية - حي الملز، شارع الأمير سلطان",
       location: Location(latitude: 30.7936, longitude: 31.0003),
     ),
     recipientDetails: ContactDetails(
       name: "عميل تجريبي 3",
       phone: "+201223344556",
       email: "customer3@example.com",
+      address: "الرياض، المملكة العربية السعودية - حي المروج، شارع الأمير محمد بن عبدالعزيز",
       location: Location(latitude: 30.7800, longitude: 31.0100),
     ),
     items: [
@@ -216,8 +222,8 @@ final List<Order> sampleOrders = [
     cancellationReason: null,
   ),
   Order(
+    shopId: "order_004",
     id: "order_004",
-    shopId: "shop_002",
     driverId: null,
     senderDetails: ContactDetails(
       name: "مخبز الحلويات",
@@ -324,7 +330,7 @@ class SampleDataProvider {
   // دالة للحصول على مستخدم بالمعرف
   static Users? getUserById(String id) {
     try {
-      return sampleUsers.firstWhere((user) => user.id == id);
+      return sampleUsers.firstWhere((user) => user.shopId == id);
     } catch (e) {
       return null;
     }
@@ -333,7 +339,7 @@ class SampleDataProvider {
   // دالة للحصول على محل بالمعرف
   static Shop? getShopById(String id) {
     try {
-      return sampleShops.firstWhere((shop) => shop.id == id);
+      return sampleShops.firstWhere((shop) => shop.shopId == id);
     } catch (e) {
       return null;
     }
@@ -342,7 +348,7 @@ class SampleDataProvider {
   // دالة للحصول على سائق بالمعرف
   static Driver? getDriverById(String id) {
     try {
-      return sampleDrivers.firstWhere((driver) => driver.id == id);
+      return sampleDrivers.firstWhere((driver) => driver.id  == id);
     } catch (e) {
       return null;
     }

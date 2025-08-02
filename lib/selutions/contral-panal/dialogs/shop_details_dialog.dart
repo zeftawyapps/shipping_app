@@ -55,7 +55,7 @@ class ShopDetailsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final shopOrders = appState.orders.where((o) => o.shopId == shop.id).toList();
+    final shopOrders = appState.orders.where((o) => o.shopId == shop.shopId).toList();
     final completedOrders = shopOrders.where((o) => o.status == OrderStatus.delivered).length;
     final totalRevenue = shopOrders
         .where((o) => o.status == OrderStatus.delivered)
@@ -80,7 +80,7 @@ class ShopDetailsDialog extends StatelessWidget {
                   ? '${shop.location!.latitude.toStringAsFixed(4)}, ${shop.location!.longitude.toStringAsFixed(4)}'
                   : 'غير محدد',
             ),
-            _buildDetailRow('تاريخ التسجيل', _formatDate(shop.createdAt)),
+            // _buildDetailRow('تاريخ التسجيل', _formatDate(shop.createdAt)),
             _buildDetailRow('الحالة', shop.isActive ? 'نشط' : 'غير نشط'),
             const Divider(),
             _buildDetailRow(

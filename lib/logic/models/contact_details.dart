@@ -6,12 +6,14 @@ class ContactDetails {
   final String name;
   final String phone;
   final String? email;
+  final String? address;
   final Location location;
 
   ContactDetails({
     required this.name,
     required this.phone,
     this.email,
+    this.address,
     required this.location,
   });
 
@@ -20,6 +22,7 @@ class ContactDetails {
       'name': name,
       'phone': phone,
       'email': email,
+      'address': address,
       'location': location.toJson(),
     };
   }
@@ -29,6 +32,7 @@ class ContactDetails {
       name: json['name'],
       phone: json['phone'],
       email: json['email'],
+      address: json['address'],
       location: Location.fromJson(json['location']),
     );
   }

@@ -26,17 +26,10 @@ class ShopesBloc {
     shopesBloc.loadingState();
     result.pick(
       onData: (v) {
-     String id =    v.data!.id! ;
+     String id =    v.data!.id  ?? '';
 
      Shop shop = Shop.fromJson(v.data!.map!, id);
-     // if the shop name or address or emait failed
-     //  if (shop.shopName == null || shop.address == null || shop.email.isEmpty) {
-     //    shopesBloc.failedState(
-     //      ErrorStateModel(message: 'Shop data is incomplete. Please check the shop details.'),
-     //      () {},
-     //    );
-     //    return;
-     //  }
+
         shopesBloc.successState(shop);
       },
       onError: (error) {
@@ -45,5 +38,25 @@ class ShopesBloc {
     );
   }
   // Add more methods as needed
+
+
+
+  void editShops(Shop shops) async {
+    DataSourceRepo repo = DataSourceRepo(
+      inputSource: DataSourceFirebaseSource.edit(dataModel: shops, path: FirebaseCollection.shops,),
+    );
+    var result = await repo.updateData(shops.shopId ?? '');
+    shopesBloc.loadingState();
+
+    result.pick(
+      onData: (v) {
+        shopesBloc.successState(shops);
+      },
+      onError: (error) {
+        shopesBloc.failedState(ErrorStateModel(message: error.message), () {});
+      },
+    );
+  }
+
 }
 

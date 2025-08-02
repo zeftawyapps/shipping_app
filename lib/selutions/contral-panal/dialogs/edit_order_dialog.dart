@@ -63,7 +63,7 @@ class _EditOrderDialogState extends State<EditOrderDialog> {
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('الطلب: ${widget.order.id}'),
+          Text('الطلب: ${widget.order.shopId}'),
           const SizedBox(height: 16),
           DropdownButtonFormField<OrderStatus>(
             value: selectedStatus,
@@ -94,7 +94,7 @@ class _EditOrderDialogState extends State<EditOrderDialog> {
         ),
         ElevatedButton(
           onPressed: () {
-            widget.appState.updateOrderStatus(widget.order.id, selectedStatus);
+            widget.appState.updateOrderStatus(widget.order.shopId, selectedStatus);
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(

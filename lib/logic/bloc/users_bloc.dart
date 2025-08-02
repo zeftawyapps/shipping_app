@@ -63,7 +63,7 @@ class UsersBloc {
        inputSource: DataSourceFirebaseSource.edit(dataModel: users, path: FirebaseCollection.users,),
     );
     
-    var result = await repo.updateData(users.id ?? '');
+    var result = await repo.updateData(users.id  ?? '');
     userBloc.loadingState();
      
     result.pick(
@@ -104,7 +104,7 @@ class UsersBloc {
 
     result.pick(
       onData: (v) {
-        List<Users> usersList = v.data!.map((e) => Users.formJson(e.map! , id:  e.id )).toList();
+        List<Users> usersList = v.data!.map((e) => Users.formJson(e.map! , id:  e.id  )).toList();
         listUsersBloc.successState(usersList);
       },
       onError: (error) {

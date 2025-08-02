@@ -90,7 +90,7 @@ class _ChangeDriverStatusDialogState extends State<ChangeDriverStatusDialog> {
         ),
         ElevatedButton(
           onPressed: () {
-            widget.appState.updateDriverStatus(widget.driver.id!, selectedStatus);
+            widget.appState.updateDriverStatus(widget.driver.id !, selectedStatus);
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(

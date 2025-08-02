@@ -24,9 +24,9 @@ class _DriverRallyPointScreenState extends State<DriverRallyPointScreen> {
 
   void _loadDriverData() {
     driverLocation = SampleDataProvider.getDrivers()
-        .firstWhere((driver) => driver.id == widget.driver.id, orElse: () => 
+        .firstWhere((driver) => driver.id  == widget.driver.shopId, orElse: () =>
         Driver(
-          id: widget.driver.id,
+          id : widget.driver.shopId,
           currentLocation: Location(latitude: 31.2001, longitude: 29.9187),
           status: DriverStatus.available,
           lastLocationUpdate: DateTime.now(),
@@ -47,7 +47,7 @@ class _DriverRallyPointScreenState extends State<DriverRallyPointScreen> {
       
       if (driverLocation != null) {
         final updatedDriver = Driver(
-          id: driverLocation!.id,
+          id : driverLocation!.id ,
           currentLocation: driverLocation!.currentLocation,
           status: driverLocation!.status,
           rallyPoint: newLocation,
@@ -96,7 +96,7 @@ class _DriverRallyPointScreenState extends State<DriverRallyPointScreen> {
           : DriverStatus.available;
 
       final updatedDriver = Driver(
-        id: driverLocation!.id,
+        id: driverLocation!.id ,
         currentLocation: driverLocation!.currentLocation,
         status: newStatus,
         rallyPoint: driverLocation!.rallyPoint,

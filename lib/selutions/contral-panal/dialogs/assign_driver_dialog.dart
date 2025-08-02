@@ -39,7 +39,7 @@ class AssignDriverDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text('الطلب: ${order.id}'),
+            Text('الطلب: ${order.shopId}'),
             Text('المحل: ${appState.getShopName(order.shopId)}'),
             Text('العميل: ${order.recipientDetails.name}'),
             const SizedBox(height: 16),
@@ -50,7 +50,7 @@ class AssignDriverDialog extends StatelessWidget {
             else
               ...availableDrivers.map((driver) {
                 final user = appState.users.firstWhere(
-                  (u) => u.id == driver.id,
+                  (u) => u.shopId == driver.id ,
                 );
                 return ListTile(
                   leading: const Icon(Icons.person),
@@ -60,7 +60,7 @@ class AssignDriverDialog extends StatelessWidget {
                   ),
                   trailing: ElevatedButton(
                     onPressed: () {
-                      appState.assignDriverToOrder(order.id, driver.id!);
+                      appState.assignDriverToOrder(order.shopId, driver.id !);
                       Navigator.of(context).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(

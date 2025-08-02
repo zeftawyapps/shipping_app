@@ -125,7 +125,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('تتبع الطلب ${widget.order.id}'),
+        title: Text('تتبع الطلب ${widget.order.shopId}'),
         backgroundColor: Colors.blue[600],
         foregroundColor: Colors.white,
       ),
@@ -225,7 +225,7 @@ class _OrderTrackingScreenState extends State<OrderTrackingScreen> {
                                   ),
                                 ),
                                 Text(
-                                  SampleDataProvider.getUserById(driver!.id!)?.name ?? 'غير محدد',
+                                  SampleDataProvider.getUserById(driver!.id !)?.name ?? 'غير محدد',
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,

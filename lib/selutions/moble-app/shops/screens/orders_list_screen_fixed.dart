@@ -140,7 +140,7 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        'طلب رقم: ${order.id}',
+                                        'طلب رقم: ${order.shopId}',
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,

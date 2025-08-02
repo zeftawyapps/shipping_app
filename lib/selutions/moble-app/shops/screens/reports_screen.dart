@@ -330,7 +330,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              'الطلب رقم: ${order.id}',
+                                              'الطلب رقم: ${order.shopId}',
                                               style: const TextStyle(
                                                 fontWeight: FontWeight.bold,
                                               ),

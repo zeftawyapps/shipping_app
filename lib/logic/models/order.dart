@@ -15,8 +15,8 @@ enum OrderStatus  {
 }
 
 class Order  extends BaseEntityDataModel {
-  final String id;
   final String shopId;
+  final String id ;
   final String? driverId;
   final ContactDetails senderDetails;
   final ContactDetails recipientDetails;
@@ -31,8 +31,8 @@ class Order  extends BaseEntityDataModel {
   final String? cancellationReason;
 
   Order({
-    required this.id,
     required this.shopId,
+    required this.id ,
     this.driverId,
     required this.senderDetails,
     required this.recipientDetails,
@@ -49,28 +49,28 @@ class Order  extends BaseEntityDataModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
+
       'shopId': shopId,
-      'driverId': driverId,
+      'driverId':  driverId ??   '',
       'senderDetails': senderDetails.toJson(),
       'recipientDetails': recipientDetails.toJson(),
       'items': items.map((item) => item.toJson()).toList(),
       'totalOrderPrice': totalOrderPrice,
       'status': status.name,
       'createdAt': createdAt.toIso8601String(),
-      'acceptedAt': acceptedAt?.toIso8601String(),
-      'pickedUpAt': pickedUpAt?.toIso8601String(),
-      'deliveredAt': deliveredAt?.toIso8601String(),
-      'cancelledAt': cancelledAt?.toIso8601String(),
+      'acceptedAt': acceptedAt== null ? null :   acceptedAt?.toIso8601String(),
+      'pickedUpAt':   pickedUpAt == null ? null : pickedUpAt?.toIso8601String(),
+      'deliveredAt':   deliveredAt == null ? null : deliveredAt?.toIso8601String(),
+      'cancelledAt':   cancelledAt == null ? null : cancelledAt?.toIso8601String(),
       'cancellationReason': cancellationReason,
     };
   }
 
-  factory Order.fromJson(Map<String, dynamic> json) {
+  factory Order.fromJson(Map<String, dynamic> json , String docId) {
     return Order(
-      id: json['id'],
       shopId: json['shopId'],
-      driverId: json['driverId'],
+      id :  docId ,
+      driverId: json['driverId']??"",
       senderDetails: ContactDetails.fromJson(json['senderDetails']),
       recipientDetails: ContactDetails.fromJson(json['recipientDetails']),
       items:
