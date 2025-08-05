@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shipping_app/app-configs.dart';
+import 'package:shipping_app/enums.dart';
 import '../../../logic/data/sample_data.dart';
 import '../../../logic/models/models.dart';
+import '../../../logic/bloc/Auth_bloc.dart';
+import 'package:JoDija_tamplites/util/widgits/data_source_bloc_widgets/data_source_bloc_listner.dart';
 import 'driver_rally_point_screen.dart';
 
 class DriverLoginScreen extends StatefulWidget {
@@ -14,6 +18,7 @@ class _DriverLoginScreenState extends State<DriverLoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  AuthBloc authBloc = AuthBloc();
   bool _isLoading = false;
   bool _obscurePassword = true;
 
@@ -24,64 +29,52 @@ class _DriverLoginScreenState extends State<DriverLoginScreen> {
     super.dispose();
   }
 
-  Future<void> _login() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      // محاكاة تأخير الشبكة
-      await Future.delayed(const Duration(seconds: 1));
-
-      final user = SampleDataProvider.authenticateUser(
-        _emailController.text,
-        _passwordController.text,
-      );
-
-      if (user != null && user.role == UserRole.driver) {
-        if (mounted) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => DriverRallyPointScreen(driver: user),
-            ),
-          );
-        }
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('بيانات تسجيل الدخول غير صحيحة أو لست سائقاً'),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('حدث خطأ: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
-    } finally {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       body: SafeArea(
-        child: Center(
+        child: DataSourceBlocListener<Users>(
+          bloc: authBloc.userBloc,
+          loading: () {
+            setState(() {
+              _isLoading = true;
+            });
+          },
+          success: (user) {
+            setState(() {
+              _isLoading = false;
+            });
+            
+            if (user != null && user.role == UserRole.driver) {
+              // Navigate to driver rally point screen
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => DriverRallyPointScreen(driver: user),
+                ),
+              );
+            } else {
+              // Show error message for non-driver users
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('هذا الحساب غير مخصص للسائقين'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          },
+          failure: (error, callback) {
+            setState(() {
+              _isLoading = false;
+            });
+            
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('خطأ في تسجيل الدخول: ${error.toString()}'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          },
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24.0),
             child: Form(
@@ -91,17 +84,19 @@ class _DriverLoginScreenState extends State<DriverLoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // شعار التطبيق
-                  Container(
-                    height: 120,
-                    width: 120,
-                    decoration: BoxDecoration(
-                      color: Colors.green[600],
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.local_shipping,
-                      size: 60,
-                      color: Colors.white,
+                  Center(
+                    child: Container(
+                      height: 120,
+                      width: 120,
+                      decoration: BoxDecoration(
+                        color: Colors.green[600],
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.local_shipping,
+                        size: 60,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 32),
@@ -194,21 +189,24 @@ class _DriverLoginScreenState extends State<DriverLoginScreen> {
                     ),
                     child: _isLoading
                         ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                            ),
-                          )
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    )
                         : const Text(
-                            'تسجيل الدخول',
-                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
+                      'تسجيل الدخول',
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
                   ),
                   const SizedBox(height: 24),
 
                   // بيانات تجريبية للاختبار
+
+                  AppConfigration.envType == EnvType.prototype ?
+
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
@@ -237,7 +235,7 @@ class _DriverLoginScreenState extends State<DriverLoginScreen> {
                         ),
                       ],
                     ),
-                  ),
+                  ):Container(),
                 ],
               ),
             ),
@@ -246,4 +244,82 @@ class _DriverLoginScreenState extends State<DriverLoginScreen> {
       ),
     );
   }
+
+
+
+  void _login() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      if (AppConfigration.envType == EnvType.prototype) {
+        // في بيئة الاختبار، نستخدم بيانات تجريبية
+        await _loginProtoType();
+      } else {
+        // في بيئة الإنتاج، نستخدم AuthBloc
+        Map<String, dynamic> map = {
+          authBloc.emailKey: _emailController.text.trim(),
+          authBloc.passKey: _passwordController.text,
+        };
+        authBloc.signeInAsAdmin(map: map);
+      }
+    }
+  }
+  Future<void> _loginProtoType() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      // محاكاة تأخير الشبكة
+      await Future.delayed(const Duration(seconds: 1));
+
+      // في بيئة الاختبار، نستخدم بيانات تجريبية
+
+      final user = SampleDataProvider.authenticateUser(
+        _emailController.text,
+        _passwordController.text,
+      );
+
+      if (user != null && user.role == UserRole.driver) {
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => DriverRallyPointScreen(driver: user),
+            ),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('بيانات تسجيل الدخول غير صحيحة أو لست سائقاً'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('حدث خطأ: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+
+  }
+
+
 }

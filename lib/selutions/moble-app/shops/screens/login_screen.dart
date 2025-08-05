@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shipping_app/app-configs.dart';
+import '../../../../enums.dart';
 import '../../../../logic/models/models.dart';
 import '../../../../logic/bloc/Auth_bloc.dart';
 import 'package:JoDija_tamplites/util/widgits/data_source_bloc_widgets/data_source_bloc_listner.dart';
@@ -242,6 +244,7 @@ class _ShopLoginScreenState extends State<ShopLoginScreen> {
                 const SizedBox(height: 24),
                 
                 // نص المساعدة
+                AppConfigration.envType == EnvType.prototype ?
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
@@ -270,7 +273,7 @@ class _ShopLoginScreenState extends State<ShopLoginScreen> {
                       ),
                     ],
                   ),
-                ),
+                ):Container(),
               ],
             ),
           ),

@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:shipping_app/enums.dart';
 import 'package:shipping_app/selutions/contral-panal/launch-cp.dart';
+import 'package:shipping_app/selutions/moble-app/driver/driver_login_screen.dart';
 import 'package:shipping_app/selutions/moble-app/shops/screens/login_screen.dart';
 import 'constants/configs.dart';
 abstract class AppConfigration {
@@ -78,7 +79,16 @@ abstract class AppConfigration {
   // }
 
   static Widget launchScreen() {
-    return  ShopLoginScreen(); // or any other screen you want to launch
+
+    if ( AppConfigration.appType == AppType.App_driver ) {
+      return
+      DriverLoginScreen() ;
+
+    } else {
+      return ShopLoginScreen() ;
+
+    }
+  // or any other screen you want to launch
 }
 // static String baseRoute() {
 //   if (!kIsWeb) {

@@ -2,6 +2,7 @@
 
 export 'user.dart';
 export 'location.dart';
+export 'location_point.dart';
 export 'shop.dart';
 export 'driver.dart';
 export 'order_item.dart';

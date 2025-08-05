@@ -63,61 +63,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        // return AlertDialog(
-        //   title: const Text('اختيار الموقع'),
-        //   content: Column(
-        //     mainAxisSize: MainAxisSize.min,
-        //     children: [
-        //       const Text('محاكاة اختيار الموقع من الخريطة'),
-        //       const SizedBox(height: 16),
-        //       Container(
-        //         height: 200,
-        //         width: double.infinity,
-        //         decoration: BoxDecoration(
-        //           color: Colors.grey[200],
-        //           borderRadius: BorderRadius.circular(8),
-        //           border: Border.all(color: Colors.grey),
-        //         ),
-        //         child: const Center(
-        //           child: Column(
-        //             mainAxisAlignment: MainAxisAlignment.center,
-        //             children: [
-        //               Icon(
-        //                 Icons.map,
-        //                 size: 48,
-        //                 color: Colors.grey,
-        //               ),
-        //               SizedBox(height: 8),
-        //               Text(
-        //                 'خريطة Google Maps\n(محاكاة)',
-        //                 textAlign: TextAlign.center,
-        //                 style: TextStyle(color: Colors.grey),
-        //               ),
-        //             ],
-        //           ),
-        //         ),
-        //       ),
-        //     ],
-        //   ),
-        //   actions: [
-        //     TextButton(
-        //       onPressed: () => Navigator.of(context).pop(),
-        //       child: const Text('إلغاء'),
-        //     ),
-        //     ElevatedButton(
-        //       onPressed: () {
-        //         // محاكاة اختيار موقع عشوائي
-        //         setState(() {
-        //           _selectedLatitude = 30.7900 + (DateTime.now().millisecond % 100) / 10000;
-        //           _selectedLongitude = 31.0050 + (DateTime.now().millisecond % 100) / 10000;
-        //           _selectedLocationText = 'الموقع المحدد: ${_selectedLatitude!.toStringAsFixed(4)}, ${_selectedLongitude!.toStringAsFixed(4)}';
-        //         });
-        //         Navigator.of(context).pop();
-        //       },
-        //       child: const Text('تأكيد الموقع'),
-        //     ),
-        //   ],
-        // );
+
         return LocationPickerDialog(
           title: 'اختيار الموقع',
 
@@ -186,10 +132,7 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
           name: widget.shop.shopName!,
           phone: widget.shop.phone!,
           address: widget.shop.address,
-          location:  Location(
-            latitude: _selectedLatitude!,
-            longitude: _selectedLongitude!,
-          ),
+          location:  widget.shop.location!
         ),
         recipientDetails: ContactDetails(
           name: _customerNameController.text.trim(),

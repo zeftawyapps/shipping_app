@@ -32,6 +32,30 @@ class DriversBloc {
     );
   }
 
+  // Load all drivers
+  void loadDrivers() async {
+    DataSourceRepo repo = DataSourceRepo(
+      inputSource: DataSourceFirebaseSource(FirebaseCollection.drivers),
+    );
+
+    var result = await repo.getListData();
+    listDriversBloc.loadingState();
+
+    result.pick(
+      onData: (v) {
+        if (v.data!.isEmpty) {
+          listDriversBloc.successState([]);
+        } else {
+          List<Driver> drivers = v.data!.map((e) => Driver.fromJson(e.map!, id: e.id!)).toList();
+          listDriversBloc.successState(drivers);
+        }
+      },
+      onError: (error) {
+        listDriversBloc.failedState(ErrorStateModel(message: error.message), () {});
+      },
+    );
+  }
+
   // Add more methods as needed
 }
 

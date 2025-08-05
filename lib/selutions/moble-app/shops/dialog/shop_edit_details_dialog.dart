@@ -1,7 +1,9 @@
 import 'package:JoDija_tamplites/util/widgits/data_source_bloc_widgets/data_source_bloc_listner.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shipping_app/logic/bloc/shopes_bloc.dart';
 import '../../../../logic/models/models.dart';
+import '../../../../widgets/location_picker_dialog.dart';
 
 class ShopProfileDialog extends StatefulWidget {
   final Shop shop;
@@ -57,7 +59,43 @@ late   ShopesBloc shopesBloc  ;
     _isActive = widget.shop.isActive;
   }
 
-  @override
+
+// متغيرات الموقع (محاكاة)
+double? _selectedLatitude;
+double? _selectedLongitude;
+String _selectedLocationText = '';
+
+
+void _selectLocation() {
+  // محاكاة اختيار الموقع من الخريطة
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+
+      return LocationPickerDialog(
+        title: 'اختيار الموقع',
+
+
+      );
+    },
+  ).then((value) {
+    if (value != null && value is LatLng) {
+      setState(() {
+        _selectedLatitude = value.latitude;
+        _selectedLongitude = value.longitude;
+        _selectedLocationText =
+        'الموقع المحدد: ${_selectedLatitude!.toStringAsFixed(
+            4)}, ${_selectedLongitude!.toStringAsFixed(4)}';
+      });
+    }
+
+  });
+}
+
+
+
+
+@override
   void dispose() {
     _shopNameController.dispose();
     _userNameController.dispose();
@@ -71,6 +109,16 @@ late   ShopesBloc shopesBloc  ;
 
   void _saveProfile() {
     if (_formKey.currentState!.validate()) {
+      if (_selectedLatitude == null || _selectedLongitude == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('يرجى اختيار الموقع على الخريطة')),
+        );
+        _selectLocation();
+        return;
+      }
+
+
+
       final updatedShop = Shop(
         shopId: widget.shop.shopId,
         shopName: _shopNameController.text.trim(),
@@ -78,12 +126,11 @@ late   ShopesBloc shopesBloc  ;
         email: _emailController.text.trim(),
         phone: _phoneController.text.trim().isEmpty ? null : _phoneController.text.trim(),
         address: _addressController.text.trim().isEmpty ? null : _addressController.text.trim(),
-        // location: (_latitudeController.text.isNotEmpty && _longitudeController.text.isNotEmpty)
-        //     ? Location(
-        //         latitude: double.tryParse(_latitudeController.text) ?? 0.0,
-        //         longitude: double.tryParse(_longitudeController.text) ?? 0.0,
-        //       )
-        //     : null,
+        location: Location(
+                latitude:  _selectedLatitude! ,
+                longitude:  _selectedLongitude!,
+              )
+            ,
         createdAt: widget.shop.createdAt,
         isActive: _isActive,
       );
@@ -254,6 +301,59 @@ late   ShopesBloc shopesBloc  ;
                   //   ],
                   // ),
                   const SizedBox(height: 16),
+
+
+                  // موقع الاستلام
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'موقع الاستلام',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+
+                          InkWell(
+                            onTap: _selectLocation,
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.location_on, color: Colors.red),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(
+                                      _selectedLocationText.isEmpty
+                                          ? 'اضغط لاختيار الموقع على الخريطة'
+                                          : _selectedLocationText,
+                                      style: TextStyle(
+                                        color: _selectedLocationText.isEmpty
+                                            ? Colors.grey
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                  const Icon(Icons.chevron_right),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
 
                   // Active Status Switch
                   Row(

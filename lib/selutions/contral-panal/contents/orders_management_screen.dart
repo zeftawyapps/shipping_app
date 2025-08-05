@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shipping_app/logic/models/driver.dart';
 import 'package:shipping_app/logic/models/order.dart';
-import 'package:shipping_app/logic/models/user.dart';
+import 'package:JoDija_tamplites/util/widgits/data_source_bloc_widgets/data_source_bloc_builder.dart';
+import 'package:shipping_app/logic/bloc/order_bloc.dart';
+import 'package:shipping_app/app-configs.dart';
+import 'package:shipping_app/enums.dart';
 
 import '../../../logic/provider/app_state_manager.dart';
+import '../../../logic/data/sample_data.dart';
 
 class OrdersManagementScreen extends StatefulWidget {
   const OrdersManagementScreen({Key? key}) : super(key: key);
@@ -19,18 +22,82 @@ class _OrdersManagementScreenState extends State<OrdersManagementScreen> {
   String? _selectedDriverId;
   DateTime? _startDate;
   DateTime? _endDate;
+  late OrdersBloc bloc;
+
+  @override
+  void initState() {
+    super.initState();
+    bloc = OrdersBloc();
+    
+    // Only load data if not in prototype mode
+    if (AppConfigration.envType != EnvType.prototype) {
+      bloc.loadAllOrders();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppStateManager>(
-      builder: (context, appState, child) {
-        final filteredOrders = appState.getFilteredOrders(
-          status: _selectedStatus,
-          shopId: _selectedShopId,
-          driverId: _selectedDriverId,
-          startDate: _startDate,
-          endDate: _endDate,
+    // For prototype mode, use AppStateManager directly
+    if (AppConfigration.envType == EnvType.prototype) {
+      return Consumer<AppStateManager>(
+        builder: (context, appState, child) {
+          return _buildContent(context, appState.orders);
+        },
+      );
+    }
+
+    // For production mode, use DataSourceBlocBuilder
+    return DataSourceBlocBuilder<List<Order>>(
+      loading: () {
+        return const Center(
+          child: CircularProgressIndicator(),
         );
+      },
+      bloc: bloc.listOrdersBloc,
+      failure: (error, retry) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'حدث خطأ أثناء تحميل البيانات: ${error.toString()}',
+                style: const TextStyle(color: Colors.red),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: retry,
+                child: const Text('إعادة المحاولة'),
+              ),
+            ],
+          ),
+        );
+      },
+      success: (data) {
+        return _buildContent(context, data ?? []);
+      },
+    );
+  }
+
+  Widget _buildContent(BuildContext context, List<Order> orders) {
+        // Apply local filtering
+        final filteredOrders = orders.where((order) {
+          bool matchesStatus = _selectedStatus == null || order.status == _selectedStatus;
+          bool matchesShop = _selectedShopId == null || order.shopId == _selectedShopId;
+          bool matchesDriver = _selectedDriverId == null || order.driverId == _selectedDriverId;
+          bool matchesDateRange = true;
+          
+          if (_startDate != null || _endDate != null) {
+            if (_startDate != null && order.createdAt.isBefore(_startDate!)) {
+              matchesDateRange = false;
+            }
+            if (_endDate != null && order.createdAt.isAfter(_endDate!)) {
+              matchesDateRange = false;
+            }
+          }
+          
+          return matchesStatus && matchesShop && matchesDriver && matchesDateRange;
+        }).toList();
 
         return Padding(
           padding: const EdgeInsets.all(16.0),
@@ -96,7 +163,7 @@ class _OrdersManagementScreenState extends State<OrdersManagementScreen> {
                                   value: null,
                                   child: Text('جميع المحلات'),
                                 ),
-                                ...appState.shops.map((shop) {
+                                ...SampleDataProvider.getShops().map((shop) {
                                   return DropdownMenuItem(
                                     value: shop.shopId,
                                     child: Text(shop.userName),
@@ -125,17 +192,12 @@ class _OrdersManagementScreenState extends State<OrdersManagementScreen> {
                                   value: null,
                                   child: Text('جميع السائقين'),
                                 ),
-                                ...appState.users
-                                    .where(
-                                      (user) => user.role == UserRole.driver,
-                                    )
-                                    .map((driver) {
-                                      return DropdownMenuItem(
-                                        value: driver.shopId,
-                                        child: Text(driver.name),
-                                      );
-                                    })
-                                    .toList(),
+                                ...SampleDataProvider.getDrivers().map((driver) {
+                                  return DropdownMenuItem(
+                                    value: driver.id,
+                                    child: Text(driver.name ?? 'غير محدد'),
+                                  );
+                                }).toList(),
                               ],
                               onChanged: (value) {
                                 setState(() {
@@ -195,7 +257,7 @@ class _OrdersManagementScreenState extends State<OrdersManagementScreen> {
                               cells: [
                                 DataCell(Text(order.shopId)),
                                 DataCell(
-                                  Text(appState.getShopName(order.shopId)),
+                                  Text(SampleDataProvider.getShopById(order.shopId)?.userName ?? 'غير محدد'),
                                 ),
                                 DataCell(Text(order.recipientDetails.name)),
                                 DataCell(
@@ -228,7 +290,7 @@ class _OrdersManagementScreenState extends State<OrdersManagementScreen> {
                                 DataCell(
                                   Text(
                                     order.driverId != null
-                                        ? appState.getUserName(order.driverId!)
+                                        ? SampleDataProvider.getDriverById(order.driverId!)?.name ?? 'غير محدد'
                                         : 'غير محدد',
                                   ),
                                 ),
@@ -243,7 +305,6 @@ class _OrdersManagementScreenState extends State<OrdersManagementScreen> {
                                             () => _showOrderDetails(
                                               context,
                                               order,
-                                              appState,
                                             ),
                                         tooltip: 'عرض التفاصيل',
                                       ),
@@ -256,7 +317,6 @@ class _OrdersManagementScreenState extends State<OrdersManagementScreen> {
                                           onPressed:
                                               () => _showAssignDriverDialog(
                                                 context,
-                                                appState,
                                                 order,
                                               ),
                                           tooltip: 'تعيين سائق',
@@ -269,7 +329,6 @@ class _OrdersManagementScreenState extends State<OrdersManagementScreen> {
                                           onPressed:
                                               () => _showEditOrderDialog(
                                                 context,
-                                                appState,
                                                 order,
                                               ),
                                           tooltip: 'تعديل الحالة',
@@ -284,14 +343,10 @@ class _OrdersManagementScreenState extends State<OrdersManagementScreen> {
                   ),
                 ),
               ),
-            ],
+                            ],
           ),
         );
-      },
-    );
-  }
-
-  String _getStatusDisplayName(OrderStatus status) {
+  }  String _getStatusDisplayName(OrderStatus status) {
     switch (status) {
       case OrderStatus.pending_acceptance:
         return 'في انتظار القبول';
@@ -332,7 +387,6 @@ class _OrdersManagementScreenState extends State<OrdersManagementScreen> {
   void _showOrderDetails(
     BuildContext context,
     Order order,
-    AppStateManager appState,
   ) {
     showDialog(
       context: context,
@@ -348,7 +402,7 @@ class _OrdersManagementScreenState extends State<OrdersManagementScreen> {
                   children: [
                     _buildDetailRow(
                       'المحل',
-                      appState.getShopName(order.shopId),
+                      SampleDataProvider.getShopById(order.shopId)?.userName ?? 'غير محدد',
                     ),
                     _buildDetailRow('هاتف المحل', order.senderDetails.phone),
                     const Divider(),
@@ -370,7 +424,7 @@ class _OrdersManagementScreenState extends State<OrdersManagementScreen> {
                     if (order.driverId != null)
                       _buildDetailRow(
                         'السائق',
-                        appState.getUserName(order.driverId!),
+                        SampleDataProvider.getDriverById(order.driverId!)?.name ?? 'غير محدد',
                       ),
                     _buildDetailRow(
                       'تاريخ الإنشاء',
@@ -457,12 +511,9 @@ class _OrdersManagementScreenState extends State<OrdersManagementScreen> {
 
   void _showAssignDriverDialog(
     BuildContext context,
-    AppStateManager appState,
     Order order,
   ) {
-    final availableDrivers = appState.getFilteredDrivers(
-      status: DriverStatus.available,
-    );
+    final availableDrivers = SampleDataProvider.getAvailableDrivers();
 
     showDialog(
       context: context,
@@ -475,24 +526,21 @@ class _OrdersManagementScreenState extends State<OrdersManagementScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text('الطلب: ${order.shopId}'),
-                  Text('المحل: ${appState.getShopName(order.shopId)}'),
+                  Text('المحل: ${SampleDataProvider.getShopById(order.shopId)?.userName ?? 'غير محدد'}'),
                   Text('العميل: ${order.recipientDetails.name}'),
                   const SizedBox(height: 16),
                   const Text('السائقين المتاحين:'),
                   const SizedBox(height: 8),
                   ...availableDrivers.map((driver) {
-                    final user = appState.users.firstWhere(
-                      (u) => u.shopId == driver.id ,
-                    );
                     return ListTile(
                       leading: const Icon(Icons.person),
-                      title: Text(user.name),
+                      title: Text(driver.name ?? 'غير محدد'),
                       subtitle: Text(
                         'التقييم: ${driver.rating.toStringAsFixed(1)}',
                       ),
                       trailing: ElevatedButton(
                         onPressed: () {
-                          appState.assignDriverToOrder(order.shopId, driver.id !);
+                          // TODO: In production, this would update via bloc
                           Navigator.of(context).pop();
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
@@ -520,7 +568,6 @@ class _OrdersManagementScreenState extends State<OrdersManagementScreen> {
 
   void _showEditOrderDialog(
     BuildContext context,
-    AppStateManager appState,
     Order order,
   ) {
     OrderStatus selectedStatus = order.status;
@@ -567,7 +614,7 @@ class _OrdersManagementScreenState extends State<OrdersManagementScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        appState.updateOrderStatus(order.shopId, selectedStatus);
+                        // TODO: In production, this would update via bloc
                         Navigator.of(context).pop();
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(

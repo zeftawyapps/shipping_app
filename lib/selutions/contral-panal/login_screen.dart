@@ -141,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen>
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        backgroundColor: Colors.red,
+                        backgroundColor: Colors.blue,
                       ),
                     );
                     setState(() {
@@ -282,7 +282,7 @@ class _LoginScreenState extends State<LoginScreen>
                                 _login();
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red.shade600,
+                                backgroundColor: Colors.blue ,
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),

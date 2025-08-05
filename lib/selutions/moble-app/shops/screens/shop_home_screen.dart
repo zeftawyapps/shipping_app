@@ -125,7 +125,7 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
 
         // Check if screen width is web size (typically > 760px)
         bool isWebSize = MediaQuery.of(context).size.width > 760;
-       if (shop!.shopName == null || shop!.address == null || shop!.email.isEmpty) {
+       if (shop!.shopName == null || shop!.address == null || shop!.email.isEmpty  || shop!.location == null  ) {
 return Scaffold(
           appBar: AppBar(title: const Text('خطأ')),
           body: Center(

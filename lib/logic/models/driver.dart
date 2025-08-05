@@ -7,15 +7,21 @@ enum DriverStatus { available, busy, at_rally_point }
 
 class Driver implements BaseEntityDataModel {
   String? id ;
-  final Location currentLocation;
-  final DriverStatus status;
-  final Location? rallyPoint;
-  final DateTime lastLocationUpdate;
-  final double rating;
+    Location? currentLocation;
+    DriverStatus status;
+    Location? rallyPoint;
+    String ? name ; 
+    String  ? phone ;
+    String ? email ; 
+    DateTime lastLocationUpdate;
+    double rating;
 
   Driver({
+      this.name,
+      this.phone,
+      this.email,
     this.id ,
-    required this.currentLocation,
+      this.currentLocation,
     required this.status,
     this.rallyPoint,
     required this.lastLocationUpdate,
@@ -27,11 +33,14 @@ class Driver implements BaseEntityDataModel {
   Map<String, dynamic> toJson() {
     map = {
       'id': id ,
-      'currentLocation': currentLocation.toJson(),
+      'currentLocation' :currentLocation != null  ? currentLocation!.toJson():null ,
       'status': status.name,
       'rallyPoint': rallyPoint?.toJson(),
       'lastLocationUpdate': lastLocationUpdate.toIso8601String(),
       'rating': rating,
+      'name': name,
+      'phone': phone,
+      'email': email,
     };
     return map!;
   }
@@ -39,7 +48,10 @@ class Driver implements BaseEntityDataModel {
   factory Driver.fromJson(Map<String, dynamic> json, {String? id}) {
     return Driver(
       id : json['id'] ?? id ?? "",
-      currentLocation: Location.fromJson(json['currentLocation']),
+      name: json['name'],
+      phone: json['phone'],
+      email: json['email'],
+       currentLocation:json['currentLocation'] != null ? Location.fromJson(json['currentLocation']): null  ,
       status: DriverStatus.values.firstWhere((e) => e.name == json['status']),
       rallyPoint:
           json['rallyPoint'] != null

@@ -10,16 +10,19 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   appInit();
-  if (AppConfigration.appType == AppType.App_shop) {
-    runApp(const AppLouncher());
-  } else {
+  if (AppConfigration.appType == AppType.DashBord  ) {
     setPathUrlStrategy(); // من مكتبة url_strategy
     runApp(const Launchcp());
+
+  } else {
+
+    runApp(const AppLouncher());
   }
+
 }
 
 appInit() async {
-  AppConfigration.initConfig(AppType.App_shop, EnvType.dev, BackendState.remote_dev);
+  AppConfigration.initConfig(AppType.DashBord, EnvType.dev, BackendState.remote_dev);
   
   WidgetsFlutterBinding.ensureInitialized();
   await AppConfigration.FirebaseInit();

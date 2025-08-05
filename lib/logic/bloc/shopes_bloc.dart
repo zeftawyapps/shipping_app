@@ -38,6 +38,24 @@ class ShopesBloc {
     );
   }
   // Add more methods as needed
+  void loadShops() async {
+    DataSourceRepo repo = DataSourceRepo(
+      inputSource: DataSourceFirebaseSource ( FirebaseCollection.users),
+    );
+
+    var result = await repo.getListData();
+    listShopessBloc.loadingState();
+
+    result.pick(
+      onData: (v) {
+        List<Shop> usersList = v.data!.map((e) => Shop.fromJson(e.map!,e.id!)).toList();
+        listShopessBloc.successState(usersList);
+      },
+      onError: (error) {
+        listShopessBloc.failedState(ErrorStateModel(message: error.message), () {});
+      },
+    );
+  }
 
 
 

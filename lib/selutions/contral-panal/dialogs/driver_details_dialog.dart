@@ -91,7 +91,7 @@ class DriverDetailsDialog extends StatelessWidget {
             ),
             _buildDetailRow(
               'الموقع الحالي',
-              '${driver.currentLocation.latitude.toStringAsFixed(4)}, ${driver.currentLocation.longitude.toStringAsFixed(4)}',
+              '${driver.currentLocation!.latitude.toStringAsFixed(4)}, ${driver.currentLocation!.longitude.toStringAsFixed(4)}',
             ),
             _buildDetailRow(
               'آخر تحديث للموقع',

@@ -1,16 +1,80 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:JoDija_tamplites/util/widgits/data_source_bloc_widgets/data_source_bloc_builder.dart';
+import 'package:shipping_app/logic/bloc/shopes_bloc.dart';
+import 'package:shipping_app/app-configs.dart';
+import 'package:shipping_app/enums.dart';
 
 import '../../../logic/models/models.dart';
 import '../../../logic/provider/app_state_manager.dart';
+import '../../../logic/data/sample_data.dart';
 
-class ShopsManagementScreen extends StatelessWidget {
+class ShopsManagementScreen extends StatefulWidget {
   const ShopsManagementScreen({Key? key}) : super(key: key);
 
   @override
+  State<ShopsManagementScreen> createState() => _ShopsManagementScreenState();
+}
+
+class _ShopsManagementScreenState extends State<ShopsManagementScreen> {
+  late ShopesBloc bloc;
+
+  @override
+  void initState() {
+    super.initState();
+    bloc = ShopesBloc();
+    
+    // Only load data if not in prototype mode
+    if (AppConfigration.envType != EnvType.prototype) {
+      bloc.loadShops();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Consumer<AppStateManager>(
-      builder: (context, appState, child) {
+    // For prototype mode, use AppStateManager directly
+    if (AppConfigration.envType == EnvType.prototype) {
+      return Consumer<AppStateManager>(
+        builder: (context, appState, child) {
+          return _buildContent(context, appState.shops);
+        },
+      );
+    }
+
+    // For production mode, use DataSourceBlocBuilder
+    return DataSourceBlocBuilder<List<Shop>>(
+      loading: () {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+      bloc: bloc.listShopessBloc,
+      failure: (error, retry) {
+        return Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'حدث خطأ أثناء تحميل البيانات: ${error.toString()}',
+                style: const TextStyle(color: Colors.red),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: retry,
+                child: const Text('إعادة المحاولة'),
+              ),
+            ],
+          ),
+        );
+      },
+      success: (data) {
+        return _buildContent(context, data ?? []);
+      },
+    );
+  }
+
+  Widget _buildContent(BuildContext context, List<Shop> shops) {
         return Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -28,7 +92,7 @@ class ShopsManagementScreen extends StatelessWidget {
                   Expanded(
                     child: _buildStatCard(
                       title: 'إجمالي المحلات',
-                      value: appState.shops.length.toString(),
+                      value: shops.length.toString(),
                       icon: Icons.store,
                       color: Colors.blue,
                     ),
@@ -38,7 +102,7 @@ class ShopsManagementScreen extends StatelessWidget {
                     child: _buildStatCard(
                       title: 'المحلات النشطة',
                       value:
-                          appState.shops
+                          shops
                               .where((s) => s.isActive)
                               .length
                               .toString(),
@@ -66,25 +130,16 @@ class ShopsManagementScreen extends StatelessWidget {
                         DataColumn(label: Text('الإجراءات')),
                       ],
                       rows:
-                          appState.shops.map((shop) {
-                            final owner = appState.users.firstWhere(
-                              (u) => u.email == shop.email,
-                              orElse: () => appState.users.first, // fallback to avoid crashes
-                            );
-                            final activeOrders =
-                                appState.orders
-                                    .where(
-                                      (o) =>
-                                          o.shopId == shop.shopId &&
-                                          o.status != OrderStatus.delivered &&
-                                          o.status != OrderStatus.cancelled,
-                                    )
-                                    .length;
+                          shops.map((shop) {
+                            // For active orders calculation, we'll use sample data
+                            final activeOrders = SampleDataProvider.getOrdersByShopId(shop.shopId)
+                                .where((o) => o.status != OrderStatus.delivered && o.status != OrderStatus.cancelled)
+                                .length;
 
                             return DataRow(
                               cells: [
-                                DataCell(Text(shop.userName)),
-                                DataCell(Text(owner.name)),
+                                DataCell(Text(shop.shopName?? 'غير محدد')),
+                                DataCell(Text(shop.userName)), // Shop owner same as shop name in this case
                                 DataCell(Text(shop.address ?? 'غير محدد')),
                                 DataCell(Text(shop.phone ?? 'غير محدد')),
                                 DataCell(
@@ -149,8 +204,6 @@ class ShopsManagementScreen extends StatelessWidget {
                                             () => _showShopDetails(
                                               context,
                                               shop,
-                                              owner,
-                                              appState,
                                             ),
                                         tooltip: 'عرض التفاصيل',
                                       ),
@@ -176,8 +229,6 @@ class ShopsManagementScreen extends StatelessWidget {
             ],
           ),
         );
-      },
-    );
   }
 
   Widget _buildStatCard({
@@ -220,11 +271,8 @@ class ShopsManagementScreen extends StatelessWidget {
   void _showShopDetails(
     BuildContext context,
     shop,
-    owner,
-    AppStateManager appState,
   ) {
-    final shopOrders =
-        appState.orders.where((o) => o.shopId == shop.shopId).toList();
+    final shopOrders = SampleDataProvider.getOrdersByShopId(shop.shopId);
     final completedOrders =
         shopOrders.where((o) => o.status == OrderStatus.delivered).length;
     final totalRevenue = shopOrders
@@ -243,15 +291,17 @@ class ShopsManagementScreen extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _buildDetailRow('اسم المحل', shop.userName),
-                  _buildDetailRow('المالك', owner.userName),
+                  _buildDetailRow('المالك', shop.userName), // In enhanced model, owner same as shop name
                   _buildDetailRow('البريد الإلكتروني', shop.email),
-                  _buildDetailRow('رقم الهاتف', shop.phone),
-                  _buildDetailRow('العنوان', shop.address),
+                  _buildDetailRow('رقم الهاتف', shop.phone ?? 'غير محدد'),
+                  _buildDetailRow('العنوان', shop.address ?? 'غير محدد'),
                   _buildDetailRow(
                     'الموقع',
-                    '${shop.location.latitude.toStringAsFixed(4)}, ${shop.location.longitude.toStringAsFixed(4)}',
+                    shop.location != null 
+                        ? '${shop.location!.latitude.toStringAsFixed(4)}, ${shop.location!.longitude.toStringAsFixed(4)}'
+                        : 'غير محدد',
                   ),
-                  _buildDetailRow('تاريخ التسجيل', _formatDate(shop.createdAt)),
+                  _buildDetailRow('تاريخ التسجيل', shop.createdAt != null ? _formatDate(shop.createdAt!) : 'غير محدد'),
                   _buildDetailRow('الحالة', shop.isActive ? 'نشط' : 'غير نشط'),
                   const Divider(),
                   _buildDetailRow(
@@ -309,14 +359,17 @@ class ShopsManagementScreen extends StatelessWidget {
               height: 300,
               child: Column(
                 children: [
-                  Text('العنوان: ${shop.address}'),
+                  Text('العنوان: ${shop.address ?? 'غير محدد'}'),
                   const SizedBox(height: 8),
-                  Text(
-                    'خط العرض: ${shop.location.latitude.toStringAsFixed(6)}',
-                  ),
-                  Text(
-                    'خط الطول: ${shop.location.longitude.toStringAsFixed(6)}',
-                  ),
+                  if (shop.location != null) ...[
+                    Text(
+                      'خط العرض: ${shop.location!.latitude.toStringAsFixed(6)}',
+                    ),
+                    Text(
+                      'خط الطول: ${shop.location!.longitude.toStringAsFixed(6)}',
+                    ),
+                  ] else
+                    const Text('الموقع غير محدد'),
                   const SizedBox(height: 16),
                   Expanded(
                     child: Container(

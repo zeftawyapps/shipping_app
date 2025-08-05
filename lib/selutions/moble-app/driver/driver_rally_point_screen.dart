@@ -254,11 +254,11 @@ class _DriverRallyPointScreenState extends State<DriverRallyPointScreen> {
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'خط العرض: ${driverLocation!.currentLocation.latitude.toStringAsFixed(6)}',
+                            'خط العرض: ${driverLocation!.currentLocation!.latitude.toStringAsFixed(6)}',
                             style: TextStyle(color: Colors.grey[700]),
                           ),
                           Text(
-                            'خط الطول: ${driverLocation!.currentLocation.longitude.toStringAsFixed(6)}',
+                            'خط الطول: ${driverLocation!.currentLocation!.longitude.toStringAsFixed(6)}',
                             style: TextStyle(color: Colors.grey[700]),
                           ),
                         ],
@@ -382,8 +382,8 @@ class _DriverRallyPointScreenState extends State<DriverRallyPointScreen> {
                           onPressed: _isLoading
                               ? null
                               : () => _saveRallyPoint(
-                                    driverLocation!.currentLocation.latitude + 0.001,
-                                    driverLocation!.currentLocation.longitude + 0.001,
+                                    driverLocation!.currentLocation!.latitude + 0.001,
+                                    driverLocation!.currentLocation!.longitude + 0.001,
                                   ),
                           icon: _isLoading
                               ? const SizedBox(

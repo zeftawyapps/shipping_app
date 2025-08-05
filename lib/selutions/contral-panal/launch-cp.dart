@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:shipping_app/selutions/contral-panal/contents/orders_management_screen.dart';
 import 'package:shipping_app/selutions/contral-panal/contents/shops_management_screen.dart';
 import 'package:shipping_app/selutions/contral-panal/contents/users_management_screen.dart';
+import 'package:shipping_app/selutions/contral-panal/contents/map_content_screen.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import '../../constants/views/assets.dart';
@@ -120,6 +121,12 @@ class _LaunchcpState extends State<Launchcp> {
          path: '/drivers',
          label: 'السائقين',
          content: const  DriversManagementScreen()),
+
+     RouteItem(
+         icon: Icons.map_outlined,
+         path: '/map',
+         label: 'الخريطة',
+         content: const MapContentScreen()),
    ],
  )
     ,

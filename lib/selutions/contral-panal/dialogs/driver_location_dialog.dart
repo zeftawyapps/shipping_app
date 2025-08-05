@@ -40,10 +40,10 @@ class DriverLocationDialog extends StatelessWidget {
           children: [
             Text('الموقع الحالي:'),
             Text(
-              'خط العرض: ${driver.currentLocation.latitude.toStringAsFixed(6)}',
+              'خط العرض: ${driver.currentLocation!.latitude.toStringAsFixed(6)}',
             ),
             Text(
-              'خط الطول: ${driver.currentLocation.longitude.toStringAsFixed(6)}',
+              'خط الطول: ${driver.currentLocation!.longitude.toStringAsFixed(6)}',
             ),
             if (driver.rallyPoint != null) ...[
               const SizedBox(height: 16),

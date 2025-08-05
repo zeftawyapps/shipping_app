@@ -175,7 +175,7 @@ class _AvailableDriversScreenState extends State<AvailableDriversScreen> {
                       _buildInfoRow(
                         Icons.location_on, 
                         'الموقع الحالي', 
-                        '${driver.currentLocation.latitude.toStringAsFixed(4)}, ${driver.currentLocation.longitude.toStringAsFixed(4)}'
+                        '${driver.currentLocation!.latitude.toStringAsFixed(4)}, ${driver.currentLocation!.longitude.toStringAsFixed(4)}'
                       ),
                       if (driver.rallyPoint != null)
                         _buildInfoRow(

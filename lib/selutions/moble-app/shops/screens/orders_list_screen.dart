@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shipping_app/logic/bloc/order_bloc.dart';
+import 'package:JoDija_tamplites/util/widgits/data_source_bloc_widgets/data_source_bloc_builder.dart';
 import '../../../../app-configs.dart';
 import '../../../../enums.dart';
 import '../../../../logic/models/models.dart';
-import '../../../../logic/data/sample_data.dart';
 import 'order_tracking_screen.dart';
 
 class OrdersListScreen extends StatefulWidget {
@@ -16,8 +16,6 @@ class OrdersListScreen extends StatefulWidget {
 }
 
 class _OrdersListScreenState extends State<OrdersListScreen> {
-  List<Order> orders = [];
-  bool isLoading = false;
   OrdersBloc ordersBloc = OrdersBloc();
 
   @override
@@ -27,13 +25,11 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
   }
 
   void _loadOrders() {
-
     if (AppConfigration.envType == EnvType.prototype) {
-       orders = SampleDataProvider.getOrdersByShopId( "order_001");
-
+      // For prototype mode, we can still use sample data if needed
+      // but we'll rely on the bloc for consistency
     }
-
-     ordersBloc.loadOrdersByShopId(widget.shopId);
+    ordersBloc.loadOrdersByShopId(widget.shopId);
   }
 
   String _getOrderStatusDisplayName(OrderStatus status) {
@@ -94,135 +90,172 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
         onRefresh: () async {
           _loadOrders();
         },
-        child: isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : orders.isEmpty
-                ? const Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.receipt_long,
-                          size: 64,
-                          color: Colors.grey,
-                        ),
-                        SizedBox(height: 16),
-                        Text(
-                          'لا توجد طلبات حالياً',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ],
+        child: DataSourceBlocBuilder<List<Order>>(
+          bloc: ordersBloc.listOrdersBloc,
+          loading: () {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+          success: (orders) {
+            if (orders == null || orders.isEmpty) {
+              return const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.receipt_long,
+                      size: 64,
+                      color: Colors.grey,
                     ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.all(8),
-                    itemCount: orders.length,
-                    itemBuilder: (context, index) {
-                      final order = orders[index];
-                      
-                      return Card(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 4,
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => OrderTrackingScreen(order: order),
-                              ),
-                            );
-                          },
-                          borderRadius: BorderRadius.circular(8),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        'طلب رقم: ${order.shopId}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: _getStatusColor(order.status),
-                                        borderRadius: BorderRadius.circular(12),
-                                      ),
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Icon(
-                                            _getStatusIcon(order.status),
-                                            size: 14,
-                                            color: Colors.white,
-                                          ),
-                                          const SizedBox(width: 4),
-                                          Text(
-                                            _getOrderStatusDisplayName(order.status),
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  'العميل: ${order.recipientDetails.name}',
-                                  style: const TextStyle(fontSize: 14),
-                                ),
-                                Text(
-                                  'الهاتف: ${order.recipientDetails.phone}',
-                                  style: const TextStyle(fontSize: 14),
-                                ),
-                                const SizedBox(height: 8),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'إجمالي: ${order.totalOrderPrice.toStringAsFixed(2)} جنيه',
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                    Text(
-                                      '${order.createdAt.day}/${order.createdAt.month}/${order.createdAt.year}',
-                                      style: const TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                    SizedBox(height: 16),
+                    Text(
+                      'لا توجد طلبات حالياً',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+            
+            return ListView.builder(
+              padding: const EdgeInsets.all(8),
+              itemCount: orders.length,
+              itemBuilder: (context, index) {
+                final order = orders[index];
+                
+                return Card(
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => OrderTrackingScreen(order: order),
                         ),
                       );
                     },
+                    borderRadius: BorderRadius.circular(8),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  'طلب رقم: ${order.shopId}',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: _getStatusColor(order.status),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      _getStatusIcon(order.status),
+                                      size: 14,
+                                      color: Colors.white,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      _getOrderStatusDisplayName(order.status),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'العميل: ${order.recipientDetails.name}',
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                          Text(
+                            'الهاتف: ${order.recipientDetails.phone}',
+                            style: const TextStyle(fontSize: 14),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'إجمالي: ${order.totalOrderPrice.toStringAsFixed(2)} جنيه',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green,
+                                ),
+                              ),
+                              Text(
+                                '${order.createdAt.day}/${order.createdAt.month}/${order.createdAt.year}',
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
+                );
+              },
+            );
+          },
+          failure: (error, retry) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.error_outline,
+                    size: 64,
+                    color: Colors.red,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'حدث خطأ في تحميل الطلبات',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      retry();
+                    },
+                    child: const Text('إعادة المحاولة'),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
