@@ -30,7 +30,7 @@ class _ShopHomeScreenState extends State<ShopHomeScreen> {
     super.initState();
 
 
-    shopesBloc.loadShopById(widget.user.shopId!);
+    shopesBloc.loadShopById(widget.user.UId!);
   }
 
   void _onItemTapped(int index) {

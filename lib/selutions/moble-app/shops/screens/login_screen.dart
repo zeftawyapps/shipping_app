@@ -4,6 +4,7 @@ import '../../../../enums.dart';
 import '../../../../logic/models/models.dart';
 import '../../../../logic/bloc/Auth_bloc.dart';
 import 'package:JoDija_tamplites/util/widgits/data_source_bloc_widgets/data_source_bloc_listner.dart';
+import '../dialog/change_password_dialog.dart';
 import 'shop_home_screen.dart';
 
 class ShopLoginScreen extends StatefulWidget {
@@ -39,8 +40,46 @@ class _ShopLoginScreenState extends State<ShopLoginScreen> {
         authBloc.emailKey: _emailController.text.trim(),
         authBloc.passKey: _passwordController.text,
       };
-      authBloc.signeInAsAdmin(map: map);
+      authBloc.signeIn(map: map);
     }
+  }
+
+  void _showFirstTimePasswordDialog(Users user) async {
+    final result = await showDialog<Users?>(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing for first-time users
+      builder: (context) => ChangePasswordDialog(
+        user: user,
+        onPasswordChanged: () {
+          // Mark user as no longer first-time
+          // This would typically update the user in the database
+          // For now, we'll just navigate to the home screen
+        },
+      ),
+    );
+
+    if (result != null) {
+      // Password was changed successfully, navigate to home with updated user
+      _navigateToShopHome(result);
+    } else {
+      // User cancelled or failed to change password, stay on login screen
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('يجب تغيير كلمة المرور للمتابعة'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+    }
+  }
+
+  void _navigateToShopHome(Users user) {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => ShopHomeScreen(user: user),
+      ),
+    );
   }
 
   @override
@@ -61,12 +100,13 @@ class _ShopLoginScreenState extends State<ShopLoginScreen> {
             });
             
             if (user != null && user.role == UserRole.shop_owner) {
-              // Navigate to shop home screen
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => ShopHomeScreen(user: user),
-                ),
-              );
+              // Check if this is first-time login
+              if (user.isFirstTimeLogin) {
+                _showFirstTimePasswordDialog(user);
+              } else {
+                // Navigate to shop home screen directly
+                _navigateToShopHome(user);
+              }
             } else {
               // Show error message for non-shop users
               ScaffoldMessenger.of(context).showSnackBar(

@@ -6,6 +6,7 @@ import '../../../logic/models/models.dart';
 import '../../../logic/bloc/Auth_bloc.dart';
 import 'package:JoDija_tamplites/util/widgits/data_source_bloc_widgets/data_source_bloc_listner.dart';
 import 'driver_rally_point_screen.dart';
+import 'dialog/change_password_dialog.dart';
 
 class DriverLoginScreen extends StatefulWidget {
   const DriverLoginScreen({super.key});
@@ -29,6 +30,44 @@ class _DriverLoginScreenState extends State<DriverLoginScreen> {
     super.dispose();
   }
 
+  void _showFirstTimePasswordDialog(Users driver) async {
+    final result = await showDialog<Users?>(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing for first-time users
+      builder: (context) => DriverChangePasswordDialog(
+        driver: driver,
+        onPasswordChanged: () {
+          // Mark driver as no longer first-time
+          // This would typically update the user in the database
+          // For now, we'll just navigate to the home screen
+        },
+      ),
+    );
+
+    if (result != null) {
+      // Password was changed successfully, navigate to home with updated user
+      _navigateToDriverHome(result);
+    } else {
+      // User cancelled or failed to change password, stay on login screen
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('يجب تغيير كلمة المرور للمتابعة'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      }
+    }
+  }
+
+  void _navigateToDriverHome(Users driver) {
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (context) => DriverRallyPointScreen(driver: driver),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,12 +86,13 @@ class _DriverLoginScreenState extends State<DriverLoginScreen> {
             });
             
             if (user != null && user.role == UserRole.driver) {
-              // Navigate to driver rally point screen
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(
-                  builder: (context) => DriverRallyPointScreen(driver: user),
-                ),
-              );
+              // Check if this is first-time login
+              if (user.isFirstTimeLogin) {
+                _showFirstTimePasswordDialog(user);
+              } else {
+                // Navigate to driver rally point screen directly
+                _navigateToDriverHome(user);
+              }
             } else {
               // Show error message for non-driver users
               ScaffoldMessenger.of(context).showSnackBar(
@@ -262,7 +302,7 @@ class _DriverLoginScreenState extends State<DriverLoginScreen> {
           authBloc.emailKey: _emailController.text.trim(),
           authBloc.passKey: _passwordController.text,
         };
-        authBloc.signeInAsAdmin(map: map);
+        authBloc.signeIn(map: map);
       }
     }
   }

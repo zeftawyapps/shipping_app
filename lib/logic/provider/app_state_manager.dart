@@ -56,7 +56,7 @@ class AppStateManager extends ChangeNotifier {
   }
 
   void updateUser(Users updatedUser) {
-    final index = _users.indexWhere((user) => user.shopId == updatedUser.shopId);
+    final index = _users.indexWhere((user) => user.UId == updatedUser.UId);
     if (index != -1) {
       _users[index] = updatedUser;
       notifyListeners();
@@ -64,7 +64,7 @@ class AppStateManager extends ChangeNotifier {
   }
 
   void deleteUser(String userId) {
-    _users.removeWhere((user) => user.shopId == userId);
+    _users.removeWhere((user) => user.UId == userId);
     notifyListeners();
   }
 
@@ -325,10 +325,10 @@ class AppStateManager extends ChangeNotifier {
   // دالة للحصول على اسم المستخدم
   String getUserName(String userId) {
     final user = _users.firstWhere(
-      (u) => u.shopId == userId,
+      (u) => u.UId == userId,
       orElse:
           () => Users(
-            shopId: userId,
+            UId: userId,
             name: "غير معروف",
             email: "",
             phone: "",

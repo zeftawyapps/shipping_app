@@ -56,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen>
       authBloc.emailKey: _emailController.text.trim(),
       authBloc.passKey: _passwordController.text,
     };
-    authBloc.signeInAsAdmin(map: map);
+    authBloc.signeIn(map: map);
 
     // if (success) {
     //   if (appStateManager.isAdmin) {

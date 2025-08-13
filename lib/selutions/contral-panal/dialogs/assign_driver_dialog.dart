@@ -50,7 +50,7 @@ class AssignDriverDialog extends StatelessWidget {
             else
               ...availableDrivers.map((driver) {
                 final user = appState.users.firstWhere(
-                  (u) => u.shopId == driver.id ,
+                  (u) => u.UId == driver.id ,
                 );
                 return ListTile(
                   leading: const Icon(Icons.person),

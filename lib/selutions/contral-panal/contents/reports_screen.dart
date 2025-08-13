@@ -500,7 +500,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       itemBuilder: (context, index) {
                         final driver = appState.drivers[index];
                         final user = appState.users.firstWhere(
-                          (u) => u.shopId == driver.id ,
+                          (u) => u.UId == driver.id ,
                         );
                         final driverOrders =
                             appState.orders

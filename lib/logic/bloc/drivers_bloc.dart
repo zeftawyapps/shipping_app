@@ -1,4 +1,4 @@
-import 'package:JoDija_reposatory/reposetory/repsatory_http.dart';
+ import 'package:JoDija_reposatory/reposetory/repsatory.dart';
 import 'package:JoDija_reposatory/source/firebase/crud_firebase_source.dart';
 import 'package:JoDija_tamplites/util/data_souce_bloc/base_bloc.dart';
 import 'package:JoDija_tamplites/util/data_souce_bloc/remote_base_model.dart';

@@ -21,6 +21,9 @@ abstract class AppConfigration {
     
   }
   static Future FirebaseInit() async {
+
+
+
     try {
       var data =
       await JsonAssetReader(path: AppConfigAssets.firebaseConfig).data;
@@ -44,6 +47,8 @@ abstract class AppConfigration {
                 projectId: dev['projectId'],
                 storageBucket: dev['storageBucket']));
       }
+
+
     } on Exception catch (e) {
       print(e);
     }

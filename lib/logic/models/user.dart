@@ -7,44 +7,46 @@ import 'package:JoDija_reposatory/utilis/models/base_data_model.dart';
 enum UserRole { admin, driver, shop_owner }
 
 class Users   extends UsersBaseModel  implements BaseEntityDataModel{
-    String? shopId;
+    String? UId;
   final String name;
   final String email;
   final String phone;
-  final String passwordHash;
+  final String? passwordHash;
   final UserRole role;
-
   final bool isActive;
+  final bool isFirstTimeLogin;
 
 
   Users({
-     this.shopId,
+     this.UId,
     required this.name,
     required this.email,
     required this.phone,
-    required this.passwordHash,
+     this.passwordHash,
     required this.role,
     required this.createdAt,
     required this.isActive,
+    this.isFirstTimeLogin = true, // Default to true for new users
 
   })   {
-
+id = UId ?? "" ;
+uid = UId ?? "" ;
      toJson() ;
   }
 
   // add a copyWith method to allow for easy copying with modifications
   Users copyWith({
-    String? id,
+    String? uid ,
     String? name,
     String? email,
     String? phone,
     String? passwordHash,
     UserRole? role,
-
     bool? isActive,
+    bool? isFirstTimeLogin,
   }) {
     return Users(
-      shopId: id ?? this.shopId,
+      UId: id ?? this.UId,
       name: name ?? this.name,
       email: email ?? this.email,
       phone: phone ?? this.phone,
@@ -52,6 +54,7 @@ class Users   extends UsersBaseModel  implements BaseEntityDataModel{
       role: role ?? this.role,
       createdAt: createdAt ?? this.createdAt,
       isActive: isActive ?? this.isActive,
+      isFirstTimeLogin: isFirstTimeLogin ?? this.isFirstTimeLogin,
     );
   }
 
@@ -61,16 +64,16 @@ class Users   extends UsersBaseModel  implements BaseEntityDataModel{
     map = Map() ;
 
      map = {
-      'uid': shopId,
+      'uid': uid,
       'name': name,
       'email': email,
       'phone': phone,
-
       'role': role.name,
       'createdAt': createdAt?.toIso8601String(),
        'isArchived': isArchived ?? false,
        'updatedAt': updatedAt?.toIso8601String(),
       'isActive': isActive,
+      'isFirstTimeLogin': isFirstTimeLogin,
     };
      return map! ;
   }
@@ -79,7 +82,7 @@ class Users   extends UsersBaseModel  implements BaseEntityDataModel{
 
 
    return   Users(
-      shopId: json['uid'] ??  id ?? "",
+     UId : json['uid'] ??  id ?? "",
       name: json['name'],
       email: json['email'],
       phone: json['phone']??"",
@@ -87,6 +90,7 @@ class Users   extends UsersBaseModel  implements BaseEntityDataModel{
       role: UserRole.values.firstWhere((e) => e.name == json['role']),
       createdAt: DateTime.parse(json['createdAt']??"2025-07-08T10:00:00Z" ),
       isActive: json['isActive']??true ,
+      isFirstTimeLogin: json['isFirstTimeLogin']??true ,
     );
   }
 

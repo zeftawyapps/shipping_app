@@ -1,9 +1,8 @@
+import 'package:JoDija_reposatory/reposetory/repsatory.dart';
 import 'package:JoDija_reposatory/reposetory/user/auth_repo.dart';
 import 'package:JoDija_reposatory/source/user/accountLoginLogout/auth_email_source.dart';
 import 'package:JoDija_tamplites/util/data_souce_bloc/base_bloc.dart';
-import 'package:JoDija_reposatory/reposetory/repsatory_http.dart';
-import 'package:JoDija_reposatory/reposetory/repsatory_http.dart';
-import 'package:JoDija_reposatory/source/firebase/crud_firebase_source.dart';
+ import 'package:JoDija_reposatory/source/firebase/crud_firebase_source.dart';
 import 'package:JoDija_reposatory/utilis/models/base_data_model.dart';
 import 'package:JoDija_reposatory/utilis/models/remote_base_model.dart';
 import 'package:JoDija_tamplites/util/data_souce_bloc/remote_base_model.dart';
@@ -27,7 +26,7 @@ class UsersBloc {
   DataSourceBloc<List<Users>>();
 
   void addUser(Users users)async {
-    BaseAuthRepo accountSource = BaseAuthRepo(EmailPassowrdAuthSource(email:  users.email  , pass: users.passwordHash ) );
+    BaseAuthRepo accountSource = BaseAuthRepo(EmailPassowrdAuthSource(email:  users.email  , pass: users.passwordHash! ) );
     userBloc.loadingState() ;
      var result =   await  accountSource.createAccountAndProfile(users );
     result.pick(onData: (v) {
@@ -63,7 +62,7 @@ class UsersBloc {
        inputSource: DataSourceFirebaseSource.edit(dataModel: users, path: FirebaseCollection.users,),
     );
     
-    var result = await repo.updateData(users.id  ?? '');
+    var result = await repo.updateData(users.UId   ?? '');
     userBloc.loadingState();
      
     result.pick(

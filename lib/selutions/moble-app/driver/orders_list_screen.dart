@@ -35,7 +35,7 @@ class _OrdersListScreenState extends State<OrdersListScreen> {
             .where((order) => order.status == OrderStatus.pending_acceptance)
             .toList();
         myOrders = SampleDataProvider.getOrders()
-            .where((order) => order.driverId == widget.driver.shopId)
+            .where((order) => order.driverId == widget.driver.UId)
             .toList();
         _isLoading = false;
       });

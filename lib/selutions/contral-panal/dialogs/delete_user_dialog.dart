@@ -30,7 +30,7 @@ class DeleteUserDialog extends StatelessWidget {
 
   void _handleDelete(BuildContext context) {
     // appState.deleteUser(user.id!);
-    usersBloc.deleteUser(user.shopId!);
+    usersBloc.deleteUser(user.UId!);
     Navigator.of(context).pop();
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(

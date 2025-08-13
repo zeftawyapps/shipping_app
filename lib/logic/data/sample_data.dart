@@ -4,7 +4,7 @@ import 'package:shipping_app/logic/models/models.dart';
 // بيانات تجريبية للمستخدمين
 final List<Users> sampleUsers = [
   Users(
-    shopId: "user_admin_001",
+    UId: "user_admin_001",
     name: "أحمد المدير",
     email: "ahmed.admin@example.com",
     phone: "+201001234567",
@@ -12,9 +12,10 @@ final List<Users> sampleUsers = [
     role: UserRole.admin,
     createdAt: DateTime.parse("2025-07-08T10:00:00Z"),
     isActive: true,
+    isFirstTimeLogin: false, // Admin doesn't need first-time password change
   ),
   Users(
-    shopId: "user_driver_001",
+    UId: "user_driver_001",
     name: "محمد السائق",
     email: "mohamed.driver@example.com",
     phone: "+201117654321",
@@ -22,9 +23,10 @@ final List<Users> sampleUsers = [
     role: UserRole.driver,
     createdAt: DateTime.parse("2025-07-08T10:05:00Z"),
     isActive: true,
+    isFirstTimeLogin: true, // Driver needs first-time password change
   ),
   Users(
-    shopId: "user_driver_002",
+    UId: "user_driver_002",
     name: "علي السائق الثاني",
     email: "ali.driver@example.com",
     phone: "+201198765432",
@@ -32,9 +34,10 @@ final List<Users> sampleUsers = [
     role: UserRole.driver,
     createdAt: DateTime.parse("2025-07-08T10:06:00Z"),
     isActive: true,
+    isFirstTimeLogin: true, // Driver needs first-time password change
   ),
   Users(
-    shopId: "user_shop_001",
+    UId: "user_shop_001",
     name: "فاطمة صاحبة المطعم",
     email: "fatma.restaurant@example.com",
     phone: "+201229876543",
@@ -42,9 +45,10 @@ final List<Users> sampleUsers = [
     role: UserRole.shop_owner,
     createdAt: DateTime.parse("2025-07-08T10:10:00Z"),
     isActive: true,
+    isFirstTimeLogin: true, // Shop owner needs to change password on first login
   ),
   Users(
-    shopId: "user_shop_002",
+    UId: "user_shop_002",
     name: "خالد صاحب المخبز",
     email: "khaled.bakery@example.com",
     phone: "+201334455667",
@@ -52,6 +56,7 @@ final List<Users> sampleUsers = [
     role: UserRole.shop_owner,
     createdAt: DateTime.parse("2025-07-08T10:12:00Z"),
     isActive: true,
+    isFirstTimeLogin: true, // Shop owner needs to change password on first login
   ),
 ];
 
@@ -330,7 +335,7 @@ class SampleDataProvider {
   // دالة للحصول على مستخدم بالمعرف
   static Users? getUserById(String id) {
     try {
-      return sampleUsers.firstWhere((user) => user.shopId == id);
+      return sampleUsers.firstWhere((user) => user.UId == id);
     } catch (e) {
       return null;
     }
