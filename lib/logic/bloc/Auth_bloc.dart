@@ -61,6 +61,8 @@ class AuthBloc {
           pass: map[passKey]!,
           token: v.token!,
         );
+
+        print ("token: ${v.token}");
         userBloc.successState(Users.formJson(v.toJson()));
       },
       onError: (error) {

@@ -10,6 +10,226 @@ enum LocationType {
   order_delivery,
 }
 
+// Abstract metadata class for location points
+abstract class LocationMetadata {
+  const LocationMetadata();
+  
+  Map<String, dynamic> toJson();
+  
+  factory LocationMetadata.fromJson(Map<String, dynamic> json, LocationType type) {
+    switch (type) {
+      case LocationType.driver:
+        return DriverMetadata.fromJson(json);
+      case LocationType.shop:
+        return ShopMetadata.fromJson(json);
+      case LocationType.order_pickup:
+      case LocationType.order_delivery:
+        return OrderMetadata.fromJson(json);
+    }
+  }
+}
+
+// Driver metadata model
+class DriverMetadata extends LocationMetadata {
+  final String? phone;
+  final String? status;
+  final double? rating;
+  final String? vehicleType;
+  final String? licenseNumber;
+
+  const DriverMetadata({
+    this.phone,
+    this.status,
+    this.rating,
+    this.vehicleType,
+    this.licenseNumber,
+  });
+
+  factory DriverMetadata.fromJson(Map<String, dynamic> json) {
+    return DriverMetadata(
+      phone: json['phone'],
+      status: json['status'],
+      rating: json['rating']?.toDouble(),
+      vehicleType: json['vehicleType'],
+      licenseNumber: json['licenseNumber'],
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'phone': phone,
+      'status': status,
+      'rating': rating,
+      'vehicleType': vehicleType,
+      'licenseNumber': licenseNumber,
+      'type': 'driver',
+    };
+  }
+
+  DriverMetadata copyWith({
+    String? phone,
+    String? status,
+    double? rating,
+    String? vehicleType,
+    String? licenseNumber,
+  }) {
+    return DriverMetadata(
+      phone: phone ?? this.phone,
+      status: status ?? this.status,
+      rating: rating ?? this.rating,
+      vehicleType: vehicleType ?? this.vehicleType,
+      licenseNumber: licenseNumber ?? this.licenseNumber,
+    );
+  }
+}
+
+// Shop metadata model
+class ShopMetadata extends LocationMetadata {
+  final String? address;
+  final String? phone;
+  final String? category;
+  final double? rating;
+  final String? description;
+  final bool? isActive;
+  final String? workingHours;
+
+  const ShopMetadata({
+    this.address,
+    this.phone,
+    this.category,
+    this.rating,
+    this.description,
+    this.isActive,
+    this.workingHours,
+  });
+
+  factory ShopMetadata.fromJson(Map<String, dynamic> json) {
+    return ShopMetadata(
+      address: json['address'],
+      phone: json['phone'],
+      category: json['category'],
+      rating: json['rating']?.toDouble(),
+      description: json['description'],
+      isActive: json['isActive'],
+      workingHours: json['workingHours'],
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'address': address,
+      'phone': phone,
+      'category': category,
+      'rating': rating,
+      'description': description,
+      'isActive': isActive,
+      'workingHours': workingHours,
+      'type': 'shop',
+    };
+  }
+
+  ShopMetadata copyWith({
+    String? address,
+    String? phone,
+    String? category,
+    double? rating,
+    String? description,
+    bool? isActive,
+    String? workingHours,
+  }) {
+    return ShopMetadata(
+      address: address ?? this.address,
+      phone: phone ?? this.phone,
+      category: category ?? this.category,
+      rating: rating ?? this.rating,
+      description: description ?? this.description,
+      isActive: isActive ?? this.isActive,
+      workingHours: workingHours ?? this.workingHours,
+    );
+  }
+}
+
+// Order metadata model
+class OrderMetadata extends LocationMetadata {
+  final String? customerName;
+  final String? shopName;
+  final String? address;
+  final String? phone;
+  final String? orderStatus;
+  final double? totalPrice;
+  final String? priority;
+  final String? estimatedTime;
+  final DateTime? orderDate;
+
+  const OrderMetadata({
+    this.customerName,
+    this.shopName,
+    this.address,
+    this.phone,
+    this.orderStatus,
+    this.totalPrice,
+    this.priority,
+    this.estimatedTime,
+    this.orderDate,
+  });
+
+  factory OrderMetadata.fromJson(Map<String, dynamic> json) {
+    return OrderMetadata(
+      customerName: json['customerName'],
+      shopName: json['shopName'],
+      address: json['address'],
+      phone: json['phone'],
+      orderStatus: json['orderStatus'],
+      totalPrice: json['totalPrice']?.toDouble(),
+      priority: json['priority'],
+      estimatedTime: json['estimatedTime'],
+      orderDate: json['orderDate'] != null ? DateTime.parse(json['orderDate']) : null,
+    );
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'customerName': customerName,
+      'shopName': shopName,
+      'address': address,
+      'phone': phone,
+      'orderStatus': orderStatus,
+      'totalPrice': totalPrice,
+      'priority': priority,
+      'estimatedTime': estimatedTime,
+      'orderDate': orderDate?.toIso8601String(),
+      'type': 'order',
+    };
+  }
+
+  OrderMetadata copyWith({
+    String? customerName,
+    String? shopName,
+    String? address,
+    String? phone,
+    String? orderStatus,
+    double? totalPrice,
+    String? priority,
+    String? estimatedTime,
+    DateTime? orderDate,
+  }) {
+    return OrderMetadata(
+      customerName: customerName ?? this.customerName,
+      shopName: shopName ?? this.shopName,
+      address: address ?? this.address,
+      phone: phone ?? this.phone,
+      orderStatus: orderStatus ?? this.orderStatus,
+      totalPrice: totalPrice ?? this.totalPrice,
+      priority: priority ?? this.priority,
+      estimatedTime: estimatedTime ?? this.estimatedTime,
+      orderDate: orderDate ?? this.orderDate,
+    );
+  }
+}
+
 class LocationPoint extends BaseEntityDataModel {
   String locationId;
   String name;
