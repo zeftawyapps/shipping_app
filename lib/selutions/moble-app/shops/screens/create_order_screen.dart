@@ -127,12 +127,13 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
       final newOrder = Order(
         id: 'order_${DateTime.now().millisecondsSinceEpoch}',
         shopId: widget.shop.shopId,
-        driverId: null,
         senderDetails: ContactDetails(
           name: widget.shop.shopName!,
           phone: widget.shop.phone!,
+          email: widget.shop.email,
           address: widget.shop.address,
-          location:  widget.shop.location!
+          latitude: widget.shop.location!.latitude,
+          longitude: widget.shop.location!.longitude,
         ),
         recipientDetails: ContactDetails(
           name: _customerNameController.text.trim(),
@@ -141,16 +142,15 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
               ? null
               : _customerEmailController.text.trim(),
           address: _customerAddressController.text.trim(),
-          location: Location(
-            latitude: _selectedLatitude!,
-            longitude: _selectedLongitude!,
-          ),
+          latitude: _selectedLatitude!,
+          longitude: _selectedLongitude!,
         ),
         items: _orderItems.map((item) => OrderItem(
-          productId: 'prod_${DateTime.now().millisecondsSinceEpoch}_${_orderItems.indexOf(item)}',
           name: item.name,
+          description: item.description,
           quantity: item.quantity,
           unitPrice: item.unitPrice,
+          weight: item.weight,
         )).toList(),
         totalOrderPrice: _calculateTotalPrice(),
         status: OrderStatus.pending_acceptance,
@@ -573,6 +573,8 @@ class _CreateOrderScreenState extends State<CreateOrderScreen> {
 
 class OrderItemInput {
   String name = '';
+  String description = '';
   int quantity = 0;
   double unitPrice = 0;
+  double weight = 0.5;
 }

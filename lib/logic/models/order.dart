@@ -29,7 +29,8 @@ class Order  extends BaseEntityDataModel {
   final DateTime? deliveredAt;
   final DateTime? cancelledAt;
   final String? cancellationReason;
-
+// add factory creation by http and set a tojsoncreation as main to map 
+ 
   Order({
     required this.shopId,
     required this.id ,
@@ -65,6 +66,28 @@ class Order  extends BaseEntityDataModel {
       'cancellationReason': cancellationReason,
     };
   }
+
+
+
+
+  Map<String, dynamic> toJsonHttpCreation () {
+    return {
+
+      // 'shopId': shopId,
+      'senderDetails': senderDetails.toJson(),
+      'recipientDetails': recipientDetails.toJson(),
+      'items': items.map((item) => item.toJson()).toList(),
+      // 'totalOrderPrice': totalOrderPrice,
+      // 'status': status.name,
+      // 'createdAt': createdAt.toIso8601String(),
+      // 'acceptedAt': acceptedAt== null ? null :   acceptedAt?.toIso8601String(),
+      // 'pickedUpAt':   pickedUpAt == null ? null : pickedUpAt?.toIso8601String(),
+      // 'deliveredAt':   deliveredAt == null ? null : deliveredAt?.toIso8601String(),
+      // 'cancelledAt':   cancelledAt == null ? null : cancelledAt?.toIso8601String(),
+      // 'cancellationReason': cancellationReason,
+    };
+  }
+
 
   factory Order.fromJson(Map<String, dynamic> json , String docId) {
     return Order(

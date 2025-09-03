@@ -24,11 +24,13 @@ void main() {
 }
 
 appInit() async {
-  AppConfigration.initConfig(AppType.DashBord, EnvType.dev, BackendState.remote_dev);
+  AppConfigration.initConfig(AppType.App_shop , EnvType.dev, BackendState.remote_dev);
   
   WidgetsFlutterBinding.ensureInitialized();
-  await AppConfigration.FirebaseInit();
+
   await AppConfigration.backenRoutsdInit();
+
+  await AppConfigration.FirebaseInit();
 
 }
 fcmInit() async {

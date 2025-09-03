@@ -7,15 +7,22 @@ class ContactDetails {
   final String phone;
   final String? email;
   final String? address;
-  final Location location;
+  final double latitude;
+  final double longitude;
+  final String? notes;
 
   ContactDetails({
     required this.name,
     required this.phone,
     this.email,
     this.address,
-    required this.location,
+    required this.latitude,
+    required this.longitude,
+    this.notes,
   });
+
+  // Getter to maintain backward compatibility for location
+  Location get location => Location(latitude: latitude, longitude: longitude);
 
   Map<String, dynamic> toJson() {
     return {
@@ -23,7 +30,9 @@ class ContactDetails {
       'phone': phone,
       'email': email,
       'address': address,
-      'location': location.toJson(),
+      'latitude': latitude,
+      'longitude': longitude,
+      'notes': notes??'',
     };
   }
 
@@ -33,7 +42,9 @@ class ContactDetails {
       phone: json['phone'],
       email: json['email'],
       address: json['address'],
-      location: Location.fromJson(json['location']),
+      latitude: json['latitude']?.toDouble() ?? 0.0,
+      longitude: json['longitude']?.toDouble() ?? 0.0,
+      notes: json['notes']??'',
     );
   }
 }

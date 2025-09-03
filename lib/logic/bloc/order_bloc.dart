@@ -1,5 +1,6 @@
 import 'package:JoDija_reposatory/reposetory/repsatory.dart';
 import 'package:JoDija_reposatory/source/firebase/crud_firebase_source.dart';
+import 'package:JoDija_reposatory/source/http/crud_http_sources.dart';
 import 'package:JoDija_tamplites/util/data_souce_bloc/base_bloc.dart';
 import 'package:JoDija_tamplites/util/data_souce_bloc/remote_base_model.dart';
 import 'package:shipping_app/constants/values/firebase_collections.dart';
@@ -18,12 +19,30 @@ class OrdersBloc {
   DataSourceBloc<Order> orderBloc = DataSourceBloc<Order>();
   DataSourceBloc<List<Order>> listOrdersBloc = DataSourceBloc<List<Order>>();
 
-  void insertOrder(Order order) async {
+  void insertOrderFirebase(Order order) async {
     DataSourceRepo repo = DataSourceRepo(
       inputSource: DataSourceFirebaseSource.insert(
         dataModel: order, path: FirebaseCollection.orders,
 
       ),
+    );
+    var result = await repo.addData( id: order.id);
+    orderBloc.loadingState();
+    result.pick(
+      onData: (v) {
+        orderBloc.successState(order);
+      },
+      onError: (error) {
+        orderBloc.failedState(ErrorStateModel(message: error.message), () {});
+      },
+    );
+  }
+  void insertOrder(Order order) async {
+    DataSourceRepo repo = DataSourceRepo(
+      inputSource: DataSourceDataActionsHttpSources.inputs(
+        url: "order",
+        dataModyle: order,
+      ) ,
     );
     var result = await repo.addData( id: order.id);
     orderBloc.loadingState();
